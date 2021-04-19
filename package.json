@@ -1,0 +1,15 @@
+
+{
+  "private": true,
+  "name": "mono",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "hardhat": "yarn workspace @mono/hardhat hardhat",
+
+    "subgraph": "yarn workspace @mono/subgraph",
+    
+    "next": "yarn workspace @mono/next",
+    "dev": "yarn next dev",
+    "lint": "yarn next lint"
+  }
+}
