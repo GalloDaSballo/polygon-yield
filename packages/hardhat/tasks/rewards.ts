@@ -1,3 +1,4 @@
+import { BigNumber } from "ethers";
 import { task } from "hardhat/config";
 import { Myield } from "../typechain";
 
@@ -14,7 +15,7 @@ task(TASK_REWARDS, "Prints the list of accounts", async (_taskArgs, hre) => {
     const gasCost = hre.ethers.utils.parseUnits("316850", "gwei")
     console.log("gasCost", gasCost.toString())
 
-    if(gasCost.lt(rewards)){
+    if(rewards.gt(hre.ethers.utils.parseUnits("1", "ether"))){
         const tx = await (await deployed["reinvestRewards()"]({gasLimit: 6000000})).wait();
         console.log("tx", tx.transactionHash);
     } else {
