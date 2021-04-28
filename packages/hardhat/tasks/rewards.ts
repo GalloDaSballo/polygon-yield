@@ -10,10 +10,10 @@ task(TASK_REWARDS, "Prints the list of accounts", async (_taskArgs, hre) => {
     const deployed = (await hre.ethers.getContract("Myield")) as Myield
     
     const rewards = await deployed.getRewardsBalance();
-    console.log("rewards", rewards.toString());
+    console.log("rewards", hre.ethers.utils.formatEther(rewards))
 
     const gasCost = hre.ethers.utils.parseUnits("316850", "gwei")
-    console.log("gasCost", gasCost.toString())
+    console.log("gasCost", hre.ethers.utils.formatEther(gasCost))
 
     if(rewards.gt(hre.ethers.utils.parseUnits("1", "ether"))){
         const tx = await (await deployed["reinvestRewards()"]({gasLimit: 6000000})).wait();
