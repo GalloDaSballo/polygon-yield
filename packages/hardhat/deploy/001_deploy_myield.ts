@@ -5,12 +5,11 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     const { deployments, getNamedAccounts } = hre;
 
     const { deployer } = await getNamedAccounts();
-    const greeting = "Hello, world!";
+    console.log("deployer", deployer)
 
-    await deployments.deploy("Greeter", {
+    await deployments.deploy("Myield", {
         from: deployer,
-        args: [greeting],
-        log: true,
+        log: true
     });
 };
 
