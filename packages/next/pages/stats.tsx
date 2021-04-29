@@ -1,12 +1,17 @@
 import { Contract, ethers } from "ethers";
-import { useRouter } from "next/dist/client/router";
 import { useEffect, useState } from "react";
 import LendingPoolV2Artifact from "@aave/protocol-v2/artifacts/contracts/protocol/lendingpool/LendingPool.sol/LendingPool.json";
-import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../utils/constants";
+import {
+  CONTRACT_ABI,
+  CONTRACT_ADDRESS,
+  WMATIC_ADDR,
+} from "../utils/constants";
 
 const ORACLE_ABI = [
   "function getAssetPrice(address _asset) public view returns(uint256)",
 ];
+
+const EMISSIONS_PER_SECOND = "706597222222222222";
 
 const getAPR = async (): Promise<any> => {
   const maticProvider = new ethers.providers.JsonRpcProvider(
@@ -23,8 +28,9 @@ const getAPR = async (): Promise<any> => {
     maticProvider
   );
 
-  const result = await lendingPool.getUserAccountData(CONTRACT_ADDRESS);
-  console.log("result", result);
+  const resultPromise = lendingPool.getUserAccountData(CONTRACT_ADDRESS);
+
+  const reserveDataPromise = lendingPool.getReserveData(WMATIC_ADDR);
 
   const priceOracle = new Contract(
     "0x0229F777B0fAb107F9591a41d5F02E4e98dB6f2d",
@@ -32,9 +38,27 @@ const getAPR = async (): Promise<any> => {
     maticProvider
   );
 
-  const maticPrice = await priceOracle.getAssetPrice(
+  const maticPricePromise = priceOracle.getAssetPrice(
     "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"
   );
+
+  const [result, reserveData, maticPrice] = await Promise.all([
+    await resultPromise,
+    await reserveDataPromise,
+    await maticPricePromise,
+  ]);
+
+  console.log("result", result);
+  console.log("reserveData", reserveData);
+  const depositRate = ethers.utils.formatUnits(
+    reserveData.currentLiquidityRate,
+    25
+  );
+  const borrowRate = ethers.utils.formatUnits(
+    reserveData.currentVariableBorrowRate,
+    25
+  );
+
   const rate = ethers.utils.formatEther(maticPrice);
 
   const totalCollateralETH = ethers.utils.formatEther(
@@ -71,6 +95,8 @@ const getAPR = async (): Promise<any> => {
     max,
     ninetyFive,
     rewards,
+    depositRate,
+    borrowRate,
   };
 };
 
@@ -81,7 +107,9 @@ const useApr = () => {
     try {
       const res = await getAPR();
       setStats(res);
-    } catch (err) {}
+    } catch (err) {
+      console.log("something went wrogn", err);
+    }
   };
 
   useEffect(() => {
@@ -105,6 +133,9 @@ const AddressPage: React.FC = () => {
     <div>
       <h2>{CONTRACT_ADDRESS}</h2>
       <pre>Unclaimed Rewards {stats.rewards}</pre>
+      <pre>Deposit Rate: {stats.depositRate}</pre>
+
+      <pre>Borrow Rate: {stats.borrowRate}</pre>
       <pre>totalCollateralETH: {stats.totalCollateralETH}</pre>
       <pre>availableBorrowsETH: {stats.availableBorrowsETH}</pre>
       <pre>healthFactor: {stats.healthFactor}</pre>
