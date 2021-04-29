@@ -3,7 +3,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { useUser } from "../../context/UserContext";
 import { WMATIC_ADDR, WMATIC_ABI } from "../../utils/constants";
 
-const WrapMatic: React.FC = () => {
+const UnwrapMatic: React.FC = () => {
   const user = useUser();
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ const WrapMatic: React.FC = () => {
       WMATIC_ABI,
       user.provider.getSigner()
     );
-    const tx = await wMatic.deposit({ value: BNAmount });
+    const tx = await wMatic.withdraw(BNAmount);
     setLoading(true);
     await tx.wait();
     setLoading(false);
@@ -32,7 +32,7 @@ const WrapMatic: React.FC = () => {
 
   return (
     <div>
-      <h3>Wrap Matic</h3>
+      <h3>Unwrap Matic</h3>
       {loading && <p>LOADING</p>}
       <form onSubmit={handleSubmit}>
         <input
@@ -42,10 +42,10 @@ const WrapMatic: React.FC = () => {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
-        <button type="submit">Wrap</button>
+        <button type="submit">Unwrap</button>
       </form>
     </div>
   );
 };
 
-export default WrapMatic;
+export default UnwrapMatic;

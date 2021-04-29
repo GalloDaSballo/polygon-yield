@@ -10,7 +10,7 @@ const Header: React.FC = () => {
   const user = useUser();
   const { error } = useWeb3React();
 
-  const { matic, wMatic } = useBalances();
+  const { matic, wMatic, shares } = useBalances();
 
   const login = useLogin();
   return (
@@ -23,8 +23,9 @@ const Header: React.FC = () => {
         <div>
           <div className={styles.commands}>
             Connected as: {String(user?.address).substring(0, 6)}... Matic:{" "}
-            {utils.formatEther(matic.toString())}
-            Wmatic: {utils.formatEther(wMatic.toString())}
+            {utils.formatEther(matic)}
+            Wmatic: {utils.formatEther(wMatic)}
+            Shares: {utils.formatEther(shares)}
           </div>
         </div>
       )}
