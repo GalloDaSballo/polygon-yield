@@ -1,0 +1,18 @@
+.footer {
+  max-width: 755px;
+  padding: 27px 18px;
+  margin: auto;
+  margin-top: 72px;
+  text-align: center;
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+.footerLinks {
+  display: flex;
+  > div {
+    flex: 1;
+  }
+}

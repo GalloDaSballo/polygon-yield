@@ -1,0 +1,50 @@
+.header {
+  padding: 67px 120px;
+  display: flex;
+  justify-content: space-between;
+  white-space: nowrap;
+
+  span a {
+    text-decoration: underline;
+  }
+
+  .commands {
+    display: flex;
+    a {
+      display: inline-block;
+    }
+    flex: 1;
+    justify-content: flex-end;
+    flex-direction: row;
+    div {
+      margin-left: 24px;
+      flex: 1;
+    }
+  }
+  @media screen and (max-width: 1024px) {
+    padding: 12px 15px;
+
+    .commands {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      flex-direction: column;
+      div {
+        margin-bottom: 12px;
+        align-self: flex-end;
+      }
+    }
+  }
+}
+.button, .actionButton {
+  padding: 17px 38px;
+  background: #222222;
+  color: #fff;
+}
+.actionButton{
+  img {
+    vertical-align: middle;
+    margin-right: 11px;
+  }
+  background: #faa441;
+}
