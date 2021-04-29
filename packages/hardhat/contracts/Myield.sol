@@ -57,10 +57,14 @@ contract Myield is ERC20, Ownable {
     // Remove from POOL or you loose money
     if(balanceOfWant() < value) {
       // Withdraw enough want from aave so we can give it to the customer
-      divestFromAAVE(value);
+      _divestFromAAVE(value);
     }
 
     IERC20(want).transfer(msg.sender, value); // This will probably revert unless FLOAT > percent
+
+    // Have them rebalane and re-deposit
+    depositAll();
+    rebalance();
 
     return value;
   }
@@ -137,7 +141,7 @@ contract Myield is ERC20, Ownable {
 
 
   // Rebalance after deposits
-  function rebalance() public onlyOwner {
+  function rebalance() public {
     // Loop on it until it's properly done
     uint256 max_iterations = 5;
     for(uint256 i = 0; i < max_iterations; i++){
@@ -155,8 +159,7 @@ contract Myield is ERC20, Ownable {
     // are less than interest for borrowing or you'll be effectively loosing money
   }
 
-  
-  // IN PORGRESS CURRENTLY WILL TRY TO LEAVE YOU AT 1
+  // returns 95% of the collateral we can withdraw from aave, used to loop and repay debts
   function canRepay() public view returns (uint256) {
     (
       uint256 totalCollateralETH,
@@ -171,29 +174,31 @@ contract Myield is ERC20, Ownable {
     uint256 owed = totalDebtETH;
 
     if(owed == 0){
-      console.log("canRepay, own 0");
-      return uint(-1); //You can repay all of it
+      return uint(-1); //You have repaid all
     }
 
     uint256 diff = deposited.sub(owed.mul(10000).div(currentLiquidationThreshold));
     uint256 inWant = diff.mul(10**18).div(getRate()).mul(95).div(100); // Take 95% just to be safe
-
-    console.log("canRepay, inWant");
-    console.log(inWant);
     
     return inWant;
   }
 
-
+  // For forced withdrawals
   function divestFromAAVE(uint256 amount) public onlyOwner {
+    _divestFromAAVE(amount);
+  }
+
+  // For withdrawing your funds
+  function _divestFromAAVE(uint256 amount) internal {
+    // TODO: Make this more efficient and avoid withdrawing all for no reason
     require(amount <= getTotalValue(), "Cannot withdraw more than totalValue");
     
     uint256 current = balanceOfWant();
-    uint256 repayAmount = canRepay();
+    uint256 repayAmount = canRepay(); // The "unsafe" (below target health) you can withdraw
 
+    // Loop to withdraw until you have the amount you need
     while(current < amount && repayAmount != uint(-1)){
-      
-      withdrawStepFromAAVE(repayAmount);
+      _withdrawStepFromAAVE(repayAmount);
       current = balanceOfWant();
       repayAmount = canRepay();
     }
@@ -202,14 +207,19 @@ contract Myield is ERC20, Ownable {
     ILendingPool(LENDING_POOL).withdraw(want, type(uint).max, address(this));
   }
 
-  
+
   //Take 95% of withdrawable, use that to repay AAVE
-  function withdrawStepFromAAVE(uint256 canRepay) public onlyOwner {
+  function _withdrawStepFromAAVE(uint256 canRepay) internal {
     if(canRepay > 0){
       //Repay this step
         ILendingPool(LENDING_POOL).withdraw(want, canRepay, address(this));
         ILendingPool(LENDING_POOL).repay(want, canRepay, 2, address(this));
     }
+  }
+
+  // For admin forced withdrawals
+  function withdrawStepFromAAVE(uint256 canRepay) public onlyOwner {
+    _withdrawStepFromAAVE(canRepay);
   }
 
   function reinvestRewards() public onlyOwner {
@@ -243,11 +253,19 @@ contract Myield is ERC20, Ownable {
 
     /** Basic AAVE Methods */
   function withdrawFromAAVE(uint256 amount) public onlyOwner { 
-    ILendingPool(LENDING_POOL).repay(want, amount, 2, address(this));
+    ILendingPool(LENDING_POOL).withdraw(want, amount, address(this));
   }
 
   function repayAAVE(uint256 amount) public onlyOwner { 
     ILendingPool(LENDING_POOL).repay(want, amount, 2, address(this));
+  }
+
+  // Deposit in aave pool in case funds are not being invested
+  function depositAll() public { 
+    uint256 balance = balanceOfWant();
+    if(balance > 0) {
+      ILendingPool(LENDING_POOL).deposit(want, balance, address(this), 0);
+    } 
   }
 
 
@@ -255,7 +273,7 @@ contract Myield is ERC20, Ownable {
   // For now we'll rug assets as we please
   function rug(address asset, address destination) public onlyOwner returns (uint256){
     uint256 amount = IERC20(asset).balanceOf(address(this));
-    IERC20(asset).transferFrom(address(this), destination, amount);
+    IERC20(asset).transfer(destination, amount);
 
     return amount;
   }

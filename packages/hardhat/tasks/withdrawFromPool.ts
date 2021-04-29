@@ -9,7 +9,7 @@ task(TASK_WITHDRAW_FROM_POOL, "Prints the list of accounts", async (_taskArgs, h
     console.log("deployer", deployer)
 
     const deployed = (await hre.ethers.getContract("Myield")) as Myield
-    const withdrawal = await (await deployed.withdrawFromAAVE(BigNumber.from("8074977123998254"))).wait()
+    const withdrawal = await (await deployed.withdrawFromAAVE(BigNumber.from("1000000000000000000"), {gasLimit: 5000000})).wait()
     console.log("Withdrawal!")
 
 });

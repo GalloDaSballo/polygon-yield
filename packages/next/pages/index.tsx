@@ -1,9 +1,9 @@
 import Head from "next/head";
-import APR from "../components/APR";
 import UnwrapMatic from "../components/UnwrapMatic";
 import WrapMatic from "../components/WrapMatic";
 import Deposit from "../components/Deposit";
 import styles from "../styles/Home.module.scss";
+import Withdraw from "../components/Withdraw";
 
 const Home: React.FC = () => {
   return (
@@ -15,7 +15,7 @@ const Home: React.FC = () => {
       <WrapMatic />
       <UnwrapMatic />
       <Deposit />
-      <APR address="0x1a13F4Ca1d028320A707D99520AbFefca3998b7F" />
+      <Withdraw />
     </div>
   );
 };

@@ -2,19 +2,25 @@ import { Contract, ethers } from "ethers";
 import { useRouter } from "next/dist/client/router";
 import { useEffect, useState } from "react";
 import LendingPoolV2Artifact from "@aave/protocol-v2/artifacts/contracts/protocol/lendingpool/LendingPool.sol/LendingPool.json";
-import { CONTRACT_ADDRESS } from "../utils/constants";
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../utils/constants";
 
 const ORACLE_ABI = [
   "function getAssetPrice(address _asset) public view returns(uint256)",
 ];
 
 const getAPR = async (): Promise<any> => {
+  const maticProvider = new ethers.providers.JsonRpcProvider(
+    "https://rpc-mainnet.maticvigil.com/v1/c3465edfbaa8d0612c382aad7cb5f876418eb4f4"
+  );
+  const vault = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, maticProvider);
+
+  const rewardsData = await vault.getRewardsBalance();
+  const rewards = ethers.utils.formatEther(rewardsData);
+
   const lendingPool = new Contract(
     "0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf",
     LendingPoolV2Artifact.abi,
-    new ethers.providers.JsonRpcProvider(
-      "https://rpc-mainnet.maticvigil.com/v1/c3465edfbaa8d0612c382aad7cb5f876418eb4f4"
-    )
+    maticProvider
   );
 
   const result = await lendingPool.getUserAccountData(CONTRACT_ADDRESS);
@@ -23,9 +29,7 @@ const getAPR = async (): Promise<any> => {
   const priceOracle = new Contract(
     "0x0229F777B0fAb107F9591a41d5F02E4e98dB6f2d",
     ORACLE_ABI,
-    new ethers.providers.JsonRpcProvider(
-      "https://rpc-mainnet.maticvigil.com/v1/c3465edfbaa8d0612c382aad7cb5f876418eb4f4"
-    )
+    maticProvider
   );
 
   const maticPrice = await priceOracle.getAssetPrice(
@@ -66,6 +70,7 @@ const getAPR = async (): Promise<any> => {
     rate,
     max,
     ninetyFive,
+    rewards,
   };
 };
 
@@ -90,9 +95,7 @@ const useApr = () => {
 };
 
 const AddressPage: React.FC = () => {
-  const router = useRouter();
-  const { address } = router.query;
-  const stats = useApr(String(address));
+  const stats = useApr();
 
   if (!stats) {
     return <p>Loading</p>;
@@ -100,8 +103,8 @@ const AddressPage: React.FC = () => {
 
   return (
     <div>
-      <h2>{address}</h2>
-
+      <h2>{CONTRACT_ADDRESS}</h2>
+      <pre>Unclaimed Rewards {stats.rewards}</pre>
       <pre>totalCollateralETH: {stats.totalCollateralETH}</pre>
       <pre>availableBorrowsETH: {stats.availableBorrowsETH}</pre>
       <pre>healthFactor: {stats.healthFactor}</pre>
