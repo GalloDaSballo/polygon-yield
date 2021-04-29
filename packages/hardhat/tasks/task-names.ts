@@ -16,3 +16,4 @@ export const TASK_CAN_TAKE = "canTake";
 export const TASK_DIVEST = "divest";
 export const TASK_DEPOSIT_REBALANCE_WITHDRAW = "drw";
 export const TASK_REWARDS = "rewards";
+export const TASK_SEND_TO_WALLET = "sendToWallet";

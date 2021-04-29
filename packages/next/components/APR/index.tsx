@@ -13,7 +13,7 @@ const useApr = (assetAddress: string): string => {
   useEffect(() => {
     const interval = setInterval(() => {
       updateApr();
-    }, 2000);
+    }, 100000000000000);
     return () => clearInterval(interval);
   }, [updateApr]);
   return apr;

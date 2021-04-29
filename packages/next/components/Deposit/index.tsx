@@ -2,9 +2,14 @@ import { utils, Contract, BigNumber } from "ethers";
 import { FormEvent, useMemo, useState } from "react";
 import { useBalances } from "../../context/BalanceContext";
 import { useUser } from "../../context/UserContext";
-import { WMATIC_ADDR, WMATIC_ABI } from "../../utils/constants";
+import {
+  WMATIC_ADDR,
+  WMATIC_ABI,
+  CONTRACT_ABI,
+  CONTRACT_ADDRESS,
+} from "../../utils/constants";
 
-const UnwrapMatic: React.FC = () => {
+const Deposit: React.FC = () => {
   const user = useUser();
   const { wMatic: wMaticBalance } = useBalances();
   const [amount, setAmount] = useState("");
@@ -22,10 +27,27 @@ const UnwrapMatic: React.FC = () => {
       WMATIC_ABI,
       user.provider.getSigner()
     );
-    const tx = await wMatic.withdraw(BNAmount);
+    const allowance = await wMatic.allowance(user.address, CONTRACT_ADDRESS);
+    console.log("allowance", allowance.toString());
+    if (allowance.lt(BNAmount)) {
+      // Require allowance
+      setLoading(true);
+      const allowanceRequest = await wMatic.approve(CONTRACT_ADDRESS, BNAmount);
+      await allowanceRequest.wait();
+      setLoading(false);
+    }
+
+    const vault = new Contract(
+      CONTRACT_ADDRESS,
+      CONTRACT_ABI,
+      user.provider.getSigner()
+    );
+
+    const depositRequest = await vault.deposit(BNAmount, {gasLimit: 1000000});
     setLoading(true);
-    await tx.wait();
+    const result = await depositRequest.wait();
     setLoading(false);
+    console.log("result", result);
   };
 
   if (!user) {
@@ -34,7 +56,7 @@ const UnwrapMatic: React.FC = () => {
 
   return (
     <div>
-      <h3>Unwrap Matic</h3>
+      <h3>Deposit</h3>
       {loading && <p>LOADING</p>}
       <form onSubmit={handleSubmit}>
         <input
@@ -45,10 +67,10 @@ const UnwrapMatic: React.FC = () => {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
-        <button type="submit">Unwrap</button>
+        <button type="submit">Deposit</button>
       </form>
     </div>
   );
 };
 
-export default UnwrapMatic;
+export default Deposit;

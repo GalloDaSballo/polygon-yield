@@ -1,14 +1,14 @@
 import { Contract, ethers } from "ethers";
 import { useRouter } from "next/dist/client/router";
 import { useEffect, useState } from "react";
-
 import LendingPoolV2Artifact from "@aave/protocol-v2/artifacts/contracts/protocol/lendingpool/LendingPool.sol/LendingPool.json";
+import { CONTRACT_ADDRESS } from "../utils/constants";
 
 const ORACLE_ABI = [
   "function getAssetPrice(address _asset) public view returns(uint256)",
 ];
 
-const getAPR = async (assetAddress: string): Promise<any> => {
+const getAPR = async (): Promise<any> => {
   const lendingPool = new Contract(
     "0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf",
     LendingPoolV2Artifact.abi,
@@ -17,7 +17,7 @@ const getAPR = async (assetAddress: string): Promise<any> => {
     )
   );
 
-  const result = await lendingPool.getUserAccountData(assetAddress);
+  const result = await lendingPool.getUserAccountData(CONTRACT_ADDRESS);
   console.log("result", result);
 
   const priceOracle = new Contract(
@@ -69,18 +69,22 @@ const getAPR = async (assetAddress: string): Promise<any> => {
   };
 };
 
-const useApr = (assetAddress: string) => {
+const useApr = () => {
   const [stats, setStats] = useState<any | null>(null);
 
+  const fetchStats = async () => {
+    try {
+      const res = await getAPR();
+      setStats(res);
+    } catch (err) {}
+  };
+
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await getAPR(assetAddress);
-        setStats(res);
-      } catch (err) {}
-    };
-    fetchStats();
-  }, [assetAddress]);
+    const interval = setInterval(() => {
+      fetchStats();
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   return stats;
 };

@@ -1,10 +1,13 @@
 import { utils, Contract, BigNumber } from "ethers";
 import { FormEvent, useMemo, useState } from "react";
+import { useBalances } from "../../context/BalanceContext";
 import { useUser } from "../../context/UserContext";
 import { WMATIC_ADDR, WMATIC_ABI } from "../../utils/constants";
 
 const WrapMatic: React.FC = () => {
   const user = useUser();
+  const { matic: maticBalance } = useBalances();
+
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const BNAmount = useMemo(
@@ -39,6 +42,13 @@ const WrapMatic: React.FC = () => {
           type="number"
           step="0.0001"
           min="0"
+          max={
+            maticBalance
+              ? utils.formatEther(
+                  maticBalance.sub(utils.parseUnits("1", "ether"))
+                )
+              : "0"
+          }
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />

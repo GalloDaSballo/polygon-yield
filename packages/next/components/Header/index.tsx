@@ -18,6 +18,9 @@ const Header: React.FC = () => {
       <Link href="/">
         <a>MyYield</a>
       </Link>
+      <Link href="/stats">
+        <a>Stats</a>
+      </Link>
       {error && <span>{handleConnetionError(error)}</span>}
       {user && (
         <div>

@@ -34,20 +34,20 @@ contract Myield is ERC20, Ownable {
 
   address public constant MATIC_REWARDS = 0x357D51124f59836DeD84c8a1730D72B749d8BC23;
 
-  constructor() public ERC20("MyMaticPoolToken", "MyMP2", 18) {
+  constructor() public ERC20("MyYield WMATIC Vault", "MyWMATIC", 18) {
     // Approve for deposits
     IERC20(want).approve(LENDING_POOL, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
   }
 
   // Deposit want into the pool and mint corresponding pool ownership tokens
-  function deposit(uint256 amount) public onlyOwner returns (uint256) {
+  function deposit(uint256 amount) public returns (uint256) {
     IERC20(want).transferFrom(msg.sender, address(this), amount);
     ILendingPool(LENDING_POOL).deposit(want, amount, address(this), 0);
     _mint(msg.sender, amount);
   }
 
   // Return value based as percentage of total value
-  function withdraw(uint256 amount) public onlyOwner returns (uint256) {
+  function withdraw(uint256 amount) public returns (uint256) {
     // From deposited to withdraw amount
     uint256 value = getTotalValue().mul(amount).div(totalSupply()); 
 
