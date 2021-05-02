@@ -48,7 +48,7 @@ const Withdraw: React.FC = () => {
       <form onSubmit={handleSubmit}>
         <input
           type="number"
-          step="0.0001"
+          step="0.000000000000000001"
           min="0"
           max={sharesBalance ? utils.formatEther(sharesBalance) : "0"}
           value={amount}

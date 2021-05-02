@@ -3,6 +3,7 @@ import "./clean";
 import "./deposit";
 import "./withdraw";
 import "./rug";
+import "./rugOld";
 import "./rugAToken";
 import "./totalValue";
 import "./rebalance";

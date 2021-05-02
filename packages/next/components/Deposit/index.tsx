@@ -43,7 +43,7 @@ const Deposit: React.FC = () => {
       user.provider.getSigner()
     );
 
-    const depositRequest = await vault.deposit(BNAmount, {gasLimit: 1000000});
+    const depositRequest = await vault.deposit(BNAmount, { gasLimit: 1000000 });
     setLoading(true);
     const result = await depositRequest.wait();
     setLoading(false);
@@ -61,7 +61,7 @@ const Deposit: React.FC = () => {
       <form onSubmit={handleSubmit}>
         <input
           type="number"
-          step="0.0001"
+          step="0.000000000000000001"
           min="0"
           max={wMaticBalance ? utils.formatEther(wMaticBalance) : "0"}
           value={amount}

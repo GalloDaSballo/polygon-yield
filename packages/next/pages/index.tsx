@@ -4,6 +4,7 @@ import WrapMatic from "../components/WrapMatic";
 import Deposit from "../components/Deposit";
 import styles from "../styles/Home.module.scss";
 import Withdraw from "../components/Withdraw";
+import Stats from "../components/Stats";
 
 const Home: React.FC = () => {
   return (
@@ -12,10 +13,18 @@ const Home: React.FC = () => {
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <WrapMatic />
-      <UnwrapMatic />
-      <Deposit />
-      <Withdraw />
+
+      <div className={styles.main}>
+        <div>
+          <Stats />
+        </div>
+        <div>
+          <WrapMatic />
+          <UnwrapMatic />
+          <Deposit />
+          <Withdraw />
+        </div>
+      </div>
     </div>
   );
 };

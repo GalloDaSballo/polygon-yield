@@ -26,7 +26,7 @@ contract Myield is ERC20, Ownable {
   // TODO
   address public constant LENDING_POOL = 0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf; // Address of lending pool
 
-  uint256 public constant FLOAT = 1 * 10 ** 18; // 1 WMatic will always be held
+  uint256 public constant PRECISION = 1 * 10 ** 18; // PRECISION.mul(w/e).div(PRECISION) to avoid rounding
 
   uint256 public constant MIN_HEALTH = 1300000000000000000; // 1.3
 
@@ -39,17 +39,30 @@ contract Myield is ERC20, Ownable {
     IERC20(want).approve(LENDING_POOL, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
   }
 
+  function fromDepositToShares(uint256 amount) public view returns (uint256){
+    return PRECISION.mul(amount).mul(totalSupply()).div(getTotalValue()).div(PRECISION);
+  }
+
   // Deposit want into the pool and mint corresponding pool ownership tokens
   function deposit(uint256 amount) public returns (uint256) {
     IERC20(want).transferFrom(msg.sender, address(this), amount);
     ILendingPool(LENDING_POOL).deposit(want, amount, address(this), 0);
-    _mint(msg.sender, amount);
+    if(totalSupply() == 0){
+      _mint(msg.sender, amount);
+    } else {
+      uint256 value = fromDepositToShares(amount);
+      _mint(msg.sender, value);
+    }
+  }
+
+  function fromSharesToWithdrawal(uint256 amount) public view returns (uint256){
+    return PRECISION.mul(amount).mul(getTotalValue()).div(totalSupply()).div(PRECISION); 
   }
 
   // Return value based as percentage of total value
   function withdraw(uint256 amount) public returns (uint256) {
     // From deposited to withdraw amount
-    uint256 value = getTotalValue().mul(amount).div(totalSupply()); 
+    uint256 value = fromSharesToWithdrawal(amount);
 
      // amount / total is percent owned. Multiply that by total value to get value they want to withdraw
     _burn(msg.sender, amount);
@@ -60,11 +73,17 @@ contract Myield is ERC20, Ownable {
       _divestFromAAVE(value);
     }
 
-    IERC20(want).transfer(msg.sender, value); // This will probably revert unless FLOAT > percent
-
-    // Have them rebalane and re-deposit
-    depositAll();
-    rebalance();
+    uint256 max = balanceOfWant();
+    
+    if(value > max){
+      // We can only send max, no need to rebalance
+      IERC20(want).transfer(msg.sender, max);
+    } else {
+      IERC20(want).transfer(msg.sender, value);
+      // Have them rebalane and re-deposit
+      depositAll();
+      rebalance();
+    }
 
     return value;
   }
@@ -99,7 +118,7 @@ contract Myield is ERC20, Ownable {
       uint256 healthFactor
     ) = ILendingPool(LENDING_POOL).getUserAccountData(address(this));
 
-    return totalCollateralETH.mul(10**18).div(getRate());
+    return PRECISION.mul(totalCollateralETH).mul(10**18).div(getRate()).div(PRECISION);
   }
 
   // How much we owe to aave in want
@@ -113,7 +132,7 @@ contract Myield is ERC20, Ownable {
       uint256 healthFactor
     ) = ILendingPool(LENDING_POOL).getUserAccountData(address(this));
 
-    return totalDebtETH.mul(10**18).div(getRate());
+    return PRECISION.mul(totalDebtETH).mul(10**18).div(getRate()).div(PRECISION);
   }
 
   // How much more can we borrow in want, return 0 if below MIN_HEALTH
@@ -130,10 +149,10 @@ contract Myield is ERC20, Ownable {
     // We borrow only if we are above MIN_HEALTH
     if(healthFactor > MIN_HEALTH) {
       // 95% of converted to want from Eth
-      uint256 maxValue = availableBorrowsETH.mul(95).div(100);
+      uint256 maxValue = PRECISION.mul(availableBorrowsETH).mul(95).div(100).div(PRECISION);
 
       // 18 decimals
-      return maxValue.mul(10**18).div(getRate());
+      return PRECISION.mul(maxValue).mul(10**18).div(getRate()).div(PRECISION);
     }
 
     return 0;
@@ -177,8 +196,8 @@ contract Myield is ERC20, Ownable {
       return uint(-1); //You have repaid all
     }
 
-    uint256 diff = deposited.sub(owed.mul(10000).div(currentLiquidationThreshold));
-    uint256 inWant = diff.mul(10**18).div(getRate()).mul(95).div(100); // Take 95% just to be safe
+    uint256 diff = deposited.sub(PRECISION.mul(owed).mul(10000).div(currentLiquidationThreshold).div(PRECISION));
+    uint256 inWant = PRECISION.mul(diff).mul(10**18).div(getRate()).mul(95).div(100).div(PRECISION); // Take 95% just to be safe
     
     return inWant;
   }

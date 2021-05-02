@@ -39,7 +39,7 @@ const UnwrapMatic: React.FC = () => {
       <form onSubmit={handleSubmit}>
         <input
           type="number"
-          step="0.0001"
+          step="0.000000000000000001"
           min="0"
           max={wMaticBalance ? utils.formatEther(wMaticBalance) : "0"}
           value={amount}
