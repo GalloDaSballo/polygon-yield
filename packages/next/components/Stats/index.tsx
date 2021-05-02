@@ -19,7 +19,7 @@ const calculateAPR = (supply: BigNumber): BigNumber => {
   const emissionsPerSecond = utils.parseEther(EMISSIONS_PER_SECOND);
   const emissionPerYear = emissionsPerSecond.mul(SECS_PER_YEAR);
 
-  return emissionPerYear.div(supply).mul(10 ** 6);
+  return emissionPerYear.mul(10 ** 10).div(supply);
 };
 
 // Get percentage of pool
@@ -147,23 +147,15 @@ const AddressPage: React.FC = () => {
   return (
     <div>
       <h2>{CONTRACT_ADDRESS}</h2>
-      <h2>MATH</h2>
-      <pre>Unclaimed Rewards {utils.formatEther(stats.rewards)}</pre>
-      <pre>Deposit Rate: {utils.formatUnits(stats.depositRate, 25)}%</pre>
-      <pre>Borrow Rate: {utils.formatUnits(stats.borrowRate, 25)}%</pre>
-
-      <pre>Spot Rewards APR: {utils.formatUnits(stats.depositApr, 21)}%</pre>
-      <pre>Spot Rewards APR: {utils.formatUnits(stats.borrowApr, 21)}%</pre>
-      <span>
-        SPOT APR because we don't calculate compounding depoists and loans
-      </span>
       <h2>STATS</h2>
       <pre>
-        Contract Can Borrow Another:{" "}
+        TVL:{" "}
         {utils.formatEther(
-          stats.availableBorrowsETH
+          stats.totalCollateralETH
             .mul("1000000000000000000")
-            .div(parseFloat(stats.rate))
+            .div(stats.rate)
+            .sub(stats.totalDebtETH.mul("1000000000000000000").div(stats.rate))
+            .add(stats.rewards)
         )}
       </pre>
       <pre>
@@ -179,9 +171,49 @@ const AddressPage: React.FC = () => {
         )}
       </pre>
 
+      <h2>MATH</h2>
+      <pre>Unclaimed Rewards {utils.formatEther(stats.rewards)}</pre>
+      <pre>Deposit Rate: {utils.formatUnits(stats.depositRate, 27)}%</pre>
+      <pre>Borrow Rate: {utils.formatUnits(stats.borrowRate, 27)}%</pre>
+
+      <pre>Spot Rewards APR: {utils.formatUnits(stats.depositApr, 27)}%</pre>
+      <pre>Spot Rewards APR: {utils.formatUnits(stats.borrowApr, 27)}%</pre>
+
+      <pre>
+        Deposit Rate Interest:{" "}
+        {utils.formatUnits(stats.depositRate.add(stats.depositApr), 27)}
+      </pre>
+      <pre>
+        Borrow Rate Interest:{" "}
+        {utils.formatUnits(stats.borrowApr.sub(stats.borrowRate), 27)}
+      </pre>
+
+      <pre>
+        Pool APR:{" "}
+        {utils.formatUnits(
+          stats.depositRate
+            .add(stats.depositApr)
+            .mul(stats.totalCollateralETH)
+            .add(stats.borrowApr.sub(stats.borrowRate).mul(stats.totalDebtETH))
+            .div(stats.totalCollateralETH.sub(stats.totalDebtETH)),
+          27
+        )}
+      </pre>
+
+      <span>
+        SPOT APR because we don't calculate compounding depoists and loans
+      </span>
+
       <h2>RISK</h2>
       <pre>healthFactor: {utils.formatEther(stats.healthFactor)}</pre>
-
+      <pre>
+        Contract Can Borrow Another:{" "}
+        {utils.formatEther(
+          stats.availableBorrowsETH
+            .mul("1000000000000000000")
+            .div(parseFloat(stats.rate))
+        )}
+      </pre>
       <pre>ltv: {stats.ltv.toString()}</pre>
     </div>
   );
