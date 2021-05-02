@@ -67,4 +67,46 @@ describe("Math tests", function () {
             expect(withdrawal).to.equal(ONE)
         })
     })
+
+    describe("sandwichAttack", () => {
+        it("Depositing 100, for 100 shares, the other person deposits 1 and then withdraws, they get back 1, I can get back 100", () => {
+            const shares = TOTAL_SUPPLY_100
+            const newDepositShares = PRECISION.mul(ONE).mul(TOTAL_SUPPLY_100).div(TOTAL_VALUE_100).div(PRECISION)
+            expect(newDepositShares).to.equal(ONE)
+
+            const newSupply = TOTAL_SUPPLY_100.add(ONE)
+            const newValue = TOTAL_VALUE_100.add(ONE)
+
+            const newWithdrawal = PRECISION.mul(newDepositShares).mul(newValue).div(newSupply).div(PRECISION); 
+            expect(newWithdrawal).to.equal(ONE)
+
+            const lastSupply = newSupply.sub(newWithdrawal)
+            const lastValue = newSupply.sub(newWithdrawal)
+
+            const lastWithdraw = PRECISION.mul(shares).mul(lastValue).div(lastSupply).div(PRECISION); 
+            expect(lastWithdraw).to.equal(TOTAL_SUPPLY_100) // I got back the same
+        })
+
+        it("Depositin 100 for 100 share, that double, then the other adds 1 and removes 1, I can get back 200", () => {
+            const shares = TOTAL_SUPPLY_100
+            const doubleValue = TOTAL_VALUE_100.mul(2)
+
+            const newDepositShares = PRECISION.mul(ONE).mul(TOTAL_SUPPLY_100).div(doubleValue).div(PRECISION)
+
+            expect(newDepositShares).to.equal(ONE.div(2)) // Half
+
+            const newSupply = TOTAL_SUPPLY_100.add(newDepositShares)
+            const newValue = doubleValue.add(ONE)
+
+            const newWithdrawal = PRECISION.mul(newDepositShares).mul(newValue).div(newSupply).div(PRECISION); 
+
+            expect(newWithdrawal).to.equal(ONE) // I get back my principal
+
+            const lastSupply = newSupply.sub(newDepositShares)
+            const lastValue = newValue.sub(newWithdrawal)
+
+            const lastWithdraw = PRECISION.mul(shares).mul(lastValue).div(lastSupply).div(PRECISION); 
+            expect(lastWithdraw).to.equal(doubleValue) // I got back 200 because it accrued interest before the deposit from the other account
+        })
+    })
 });
