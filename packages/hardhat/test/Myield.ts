@@ -22,12 +22,16 @@ describe("Unit tests", function () {
 
             // Ensure admin balance is exactly 1.1 WMATIC
             const wMaticBalance = await wMatic.balanceOf(admin.address)
-            if(wMaticBalance.gt("1100000000000000000")){
-                console.log("Too high balance, sending extra away")
+            if(wMaticBalance.lt("1100000000000000000")){
+                console.log("Balance is below, please send 1.1 WMATIC")
                 // Send rest to dev wallet
+                await (await wMatic.transfer("0x3F86c3A4D4857a6F92999f214e2eD3aE7BB852C1", wMaticBalance)).wait()
+                throw new Error("Balance is Off, send WMATIC to admin");
+            }
+            if(wMaticBalance.gt("1100000000000000000")){
+                console.log("Balance is above sending back rest and continuing")
                 await (await wMatic.transfer("0x3F86c3A4D4857a6F92999f214e2eD3aE7BB852C1", wMaticBalance.sub("1100000000000000000"))).wait()
             }
-
         });
 
         it("I deposit 1 WMATIC first , I get 1 share", async function () {
@@ -59,8 +63,9 @@ describe("Unit tests", function () {
             expect(balance.lt(BigNumber.from("1100000000000000000")) && balance.gt(BigNumber.from("1090000000000000000"))).to.equal(true);
         })
 
-        it("I withdraw all, I have more than 1.1 WMATIC (it accrued interest)", async function () {
+        it("After Calling reinvestRewards I withdraw all, I have more than 1.1 WMATIC (it accrued interest)", async function () {
             const toWithdraw = await contract.balanceOf(admin.address)
+            await (await contract["reinvestRewards()"]({gasLimit: 2000000})).wait()
             await (await contract["withdraw(uint256)"](toWithdraw, {gasLimit: 2000000})).wait()
             const wMatic = (await ethers.getContractAt("Myield", "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270")) as ERC20
             const balance = await wMatic.balanceOf(admin.address)

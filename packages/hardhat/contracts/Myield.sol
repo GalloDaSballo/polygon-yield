@@ -45,14 +45,15 @@ contract Myield is ERC20, Ownable {
 
   // Deposit want into the pool and mint corresponding pool ownership tokens
   function deposit(uint256 amount) public returns (uint256) {
-    IERC20(want).transferFrom(msg.sender, address(this), amount);
-    ILendingPool(LENDING_POOL).deposit(want, amount, address(this), 0);
     if(totalSupply() == 0){
       _mint(msg.sender, amount);
     } else {
       uint256 value = fromDepositToShares(amount);
       _mint(msg.sender, value);
     }
+
+    IERC20(want).transferFrom(msg.sender, address(this), amount);
+    ILendingPool(LENDING_POOL).deposit(want, amount, address(this), 0);
   }
 
   function fromSharesToWithdrawal(uint256 amount) public view returns (uint256){
@@ -241,7 +242,7 @@ contract Myield is ERC20, Ownable {
     _withdrawStepFromAAVE(canRepay);
   }
 
-  function reinvestRewards() public onlyOwner {
+  function reinvestRewards() public {
     address dataProvider = ILendingPoolAddressesProvider(ADDRES_PROVIDER).getAddress("0x1");
     (address aToken, , address variableDebt) = IProtocolDataProvider(dataProvider).getReserveTokensAddresses(want);
     address[] memory list = new address[](2);

@@ -6,7 +6,6 @@ import "hardhat-deploy";
 // To make hardhat-waffle compatible with hardhat-deploy
 // we have aliased hardhat-ethers to hardhat-ethers-deploy in package.json
 import "@nomiclabs/hardhat-waffle";
-import "hardhat-gas-reporter";
 import "@typechain/hardhat";
 import "solidity-coverage";
 import "@nomiclabs/hardhat-etherscan";
@@ -74,6 +73,9 @@ const config: HardhatUserConfig = {
         sources: "./contracts",
         tests: "./test",
     },
+    mocha: {
+        timeout: 60000
+    },
     solidity: {
         compilers: [
             {
@@ -103,11 +105,6 @@ const config: HardhatUserConfig = {
     typechain: {
         outDir: "typechain",
         target: "ethers-v5",
-    },
-    gasReporter: {
-        currency: "USD",
-        gasPrice: 100,
-        excludeContracts: ["Mock", "ERC20"],
     },
     etherscan: {
         apiKey: process.env.ETHERSCAN_API_KEY
