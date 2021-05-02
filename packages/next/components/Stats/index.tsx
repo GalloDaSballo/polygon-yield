@@ -147,51 +147,42 @@ const AddressPage: React.FC = () => {
   return (
     <div>
       <h2>{CONTRACT_ADDRESS}</h2>
+      <h2>MATH</h2>
       <pre>Unclaimed Rewards {utils.formatEther(stats.rewards)}</pre>
-      <pre>Deposit Rate: {utils.formatUnits(stats.depositRate, 25)}</pre>
-      <pre>Borrow Rate: {utils.formatUnits(stats.borrowRate, 25)}</pre>
+      <pre>Deposit Rate: {utils.formatUnits(stats.depositRate, 25)}%</pre>
+      <pre>Borrow Rate: {utils.formatUnits(stats.borrowRate, 25)}%</pre>
 
-      <pre>Spot Rewards APR: {utils.formatUnits(stats.depositApr, 23)}</pre>
-      <pre>Spot Rewards APR: {utils.formatUnits(stats.borrowApr, 23)}</pre>
+      <pre>Spot Rewards APR: {utils.formatUnits(stats.depositApr, 21)}%</pre>
+      <pre>Spot Rewards APR: {utils.formatUnits(stats.borrowApr, 21)}%</pre>
       <span>
         SPOT APR because we don't calculate compounding depoists and loans
       </span>
-
+      <h2>STATS</h2>
       <pre>
-        totalCollateralETH: {utils.formatEther(stats.totalCollateralETH)}
-      </pre>
-      <pre>
-        availableBorrowsETH: {utils.formatEther(stats.availableBorrowsETH)}
-      </pre>
-      <pre>healthFactor: {utils.formatEther(stats.healthFactor)}</pre>
-
-      <pre>totalDebtETH: {utils.formatEther(stats.totalDebtETH)}</pre>
-
-      <pre>
-        currentLiquidationThreshold:{" "}
-        {stats.currentLiquidationThreshold.toString()}
-      </pre>
-      <pre>ltv: {stats.ltv.toString()}</pre>
-      <pre>Rate: {utils.formatEther(stats.rate)}</pre>
-
-      <pre>
-        You can borrow another:{" "}
+        Contract Can Borrow Another:{" "}
         {utils.formatEther(
-          stats.availableBorrowsETH.div(parseFloat(stats.rate))
+          stats.availableBorrowsETH
+            .mul("1000000000000000000")
+            .div(parseFloat(stats.rate))
         )}
       </pre>
       <pre>
-        You Deposited:{" "}
-        {utils.formatEther(stats.totalCollateralETH.div(stats.rate))}
+        Total Deposited:{" "}
+        {utils.formatEther(
+          stats.totalCollateralETH.mul("1000000000000000000").div(stats.rate)
+        )}
       </pre>
       <pre>
-        You Borrowed: {utils.formatEther(stats.totalDebtETH.div(stats.rate))}
+        Total Borrowed:{" "}
+        {utils.formatEther(
+          stats.totalDebtETH.mul("1000000000000000000").div(stats.rate)
+        )}
       </pre>
-      <pre>
-        Max you can withdraw (from Health){" "}
-        {utils.formatEther(stats.max.div(stats.rate))}{" "}
-      </pre>
-      <pre>As 95% {utils.formatEther(stats.ninetyFive)} </pre>
+
+      <h2>RISK</h2>
+      <pre>healthFactor: {utils.formatEther(stats.healthFactor)}</pre>
+
+      <pre>ltv: {stats.ltv.toString()}</pre>
     </div>
   );
 };
