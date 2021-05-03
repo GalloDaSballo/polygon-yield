@@ -133,7 +133,7 @@ const useApr = () => {
 
 const AddressPage: React.FC = () => {
   const stats = useApr();
-  const advanced = false; // Extra data
+  const [advanced, setAdvanced] = useState(false); // Extra data
 
   const reserve = useReserve(
     "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf12700xd05e3e715d945b59290df0ae8ef85c1bdb684744"
@@ -197,7 +197,15 @@ const AddressPage: React.FC = () => {
   if (!stats) {
     return (
       <div>
-        <h2>{CONTRACT_ADDRESS}</h2>
+        <h2>
+          <a
+            href={`${EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
+            target="_blank"
+            rel="nofollow noreferrer"
+          >
+            {CONTRACT_ADDRESS}
+          </a>
+        </h2>
         <p>Loading</p>
       </div>
     );
@@ -214,7 +222,7 @@ const AddressPage: React.FC = () => {
           {CONTRACT_ADDRESS}
         </a>
       </h2>
-      <h2>STATS</h2>
+      <h2 onClick={() => setAdvanced(!advanced)}>STATS</h2>
       <span>All stats are expressed in MATIC unless otherwise noted</span>
       <pre>
         TVL:{" "}
@@ -245,13 +253,11 @@ const AddressPage: React.FC = () => {
             stats.totalDebtETH.mul("1000000000000000000").div(stats.rate)
           )
         )}
-
         <pre>Unclaimed Rewards {utils.formatEther(stats.rewards)}</pre>
       </pre>
 
       {advanced && (
         <div>
-          
           <pre>Deposit Rate: {depositApr}%</pre>
           <pre>Borrow Rate: {borrowApr}%</pre>
 
@@ -266,17 +272,13 @@ const AddressPage: React.FC = () => {
       {advanced && (
         <div>
           <h2>RISK</h2>
-          <pre>
-            healthFactor: {utils.formatEther(stats.healthFactor).substr(0, 4)}
-          </pre>
+          <pre>healthFactor: {utils.formatEther(stats.healthFactor)}</pre>
           <pre>
             Contract Can Borrow Another:{" "}
-            {formatStringAmount(
-              utils.formatEther(
-                stats.availableBorrowsETH
-                  .mul("1000000000000000000")
-                  .div(parseFloat(stats.rate))
-              )
+            {utils.formatEther(
+              stats.availableBorrowsETH
+                .mul("1000000000000000000")
+                .div(parseFloat(stats.rate))
             )}
           </pre>
           {advanced && <pre>ltv: {stats.ltv.toString()}</pre>}
