@@ -245,11 +245,13 @@ const AddressPage: React.FC = () => {
             stats.totalDebtETH.mul("1000000000000000000").div(stats.rate)
           )
         )}
+
+        <pre>Unclaimed Rewards {utils.formatEther(stats.rewards)}</pre>
       </pre>
 
       {advanced && (
         <div>
-          <pre>Unclaimed Rewards {utils.formatEther(stats.rewards)}</pre>
+          
           <pre>Deposit Rate: {depositApr}%</pre>
           <pre>Borrow Rate: {borrowApr}%</pre>
 
