@@ -2,12 +2,7 @@ import { utils, Contract, BigNumber } from "ethers";
 import { FormEvent, useMemo, useState } from "react";
 import { useBalances } from "../../context/BalanceContext";
 import { useUser } from "../../context/UserContext";
-import {
-  WMATIC_ADDR,
-  WMATIC_ABI,
-  CONTRACT_ABI,
-  CONTRACT_ADDRESS,
-} from "../../utils/constants";
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../../utils/constants";
 
 const Withdraw: React.FC = () => {
   const user = useUser();
@@ -43,7 +38,7 @@ const Withdraw: React.FC = () => {
 
   return (
     <div>
-      <h3>Withdraw</h3>
+      <h3>Withdraw WMATIC</h3>
       {loading && <p>LOADING</p>}
       <form onSubmit={handleSubmit}>
         <input
@@ -54,7 +49,9 @@ const Withdraw: React.FC = () => {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
-        <button type="submit">Withdraw</button>
+        <button disabled={!amount} type="submit">
+          Withdraw
+        </button>
       </form>
     </div>
   );

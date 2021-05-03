@@ -6,6 +6,7 @@ import { UserContextProvider } from "../context/UserContext";
 import { BalanceContextProvider } from "../context/BalanceContext";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import "../styles/globals.scss";
 
 import { client } from "../utils/graphql";
 

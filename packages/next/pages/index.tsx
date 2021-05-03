@@ -24,14 +24,28 @@ const Home: React.FC = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div>
-        <button type="button" onClick={() => setTab(Tabs.vault)}>
+      <h1>Earn more Matic, with your Matic</h1>
+
+      <div className={styles.tabs}>
+        <button
+          className={tab === Tabs.vault ? styles.active : null}
+          type="button"
+          onClick={() => setTab(Tabs.vault)}
+        >
           Deposit / Withdraw
         </button>
-        <button type="button" onClick={() => setTab(Tabs.wmatic)}>
+        <button
+          className={tab === Tabs.wmatic ? styles.active : null}
+          type="button"
+          onClick={() => setTab(Tabs.wmatic)}
+        >
           Wrap / Unwrap
         </button>
-        <button type="button" onClick={() => setTab(Tabs.admin)}>
+        <button
+          className={tab === Tabs.admin ? styles.active : null}
+          type="button"
+          onClick={() => setTab(Tabs.admin)}
+        >
           Admin
         </button>
       </div>
@@ -41,22 +55,23 @@ const Home: React.FC = () => {
           <Stats />
         </div>
 
+        {/* Actions */}
         {tab === Tabs.wmatic && (
-          <div>
+          <div className={styles.action}>
             <WrapMatic />
             <UnwrapMatic />
           </div>
         )}
 
         {tab === Tabs.vault && (
-          <div>
+          <div className={styles.action}>
             <Deposit />
             <Withdraw />
           </div>
         )}
 
         {tab === Tabs.admin && (
-          <div>
+          <div className={styles.action}>
             <ReinvestRewards />
           </div>
         )}

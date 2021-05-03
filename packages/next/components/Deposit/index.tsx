@@ -56,18 +56,20 @@ const Deposit: React.FC = () => {
 
   return (
     <div>
-      <h3>Deposit</h3>
+      <h3>Deposit WMATIC</h3>
       {loading && <p>LOADING</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="number"
-          step="0.000000000000000001"
+          step="0.000001"
           min="0"
           max={wMaticBalance ? utils.formatEther(wMaticBalance) : "0"}
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
-        <button type="submit">Deposit</button>
+        <button disabled={!amount} type="submit">
+          Deposit
+        </button>
       </form>
     </div>
   );

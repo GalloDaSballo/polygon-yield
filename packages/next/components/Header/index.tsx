@@ -5,6 +5,7 @@ import { useLogin, useUser } from "../../context/UserContext";
 import handleConnetionError from "../../utils/handleConnectionError";
 import styles from "./Header.module.scss";
 import { useBalances } from "../../context/BalanceContext";
+import { formatStringAmount } from "../../utils/format";
 
 const Header: React.FC = () => {
   const user = useUser();
@@ -22,10 +23,16 @@ const Header: React.FC = () => {
       {user && (
         <div>
           <div className={styles.commands}>
-            Connected as: {String(user?.address).substring(0, 6)}... Matic:{" "}
-            {utils.formatEther(matic)}
-            Wmatic: {utils.formatEther(wMatic)}
-            Shares: {utils.formatEther(shares)}
+            Connected as: {String(user?.address).substring(0, 6)}...
+            <span className={styles.userDetails}>
+              <span>Matic: {formatStringAmount(utils.formatEther(matic))}</span>
+              <span>
+                Wmatic: {formatStringAmount(utils.formatEther(wMatic))}
+              </span>
+              <span>
+                Shares: {formatStringAmount(utils.formatEther(shares))}
+              </span>
+            </span>
           </div>
         </div>
       )}

@@ -1,5 +1,5 @@
 .header {
-  padding: 67px 120px;
+  padding: 24px 42px;
   display: flex;
   justify-content: space-between;
   white-space: nowrap;
@@ -10,6 +10,11 @@
 
   .commands {
     display: flex;
+    .userDetails {
+      > span { 
+        margin-left: 25px;
+      }
+    }
     a {
       display: inline-block;
     }
@@ -25,13 +30,8 @@
     padding: 12px 15px;
 
     .commands {
-      display: flex;
-      flex: 1;
-      justify-content: flex-end;
-      flex-direction: column;
-      div {
-        margin-bottom: 12px;
-        align-self: flex-end;
+      .userDetails{
+        display: none;
       }
     }
   }
