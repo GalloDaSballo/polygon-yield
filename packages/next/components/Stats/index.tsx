@@ -160,9 +160,6 @@ const AddressPage: React.FC = () => {
         aaveRes[0].price.priceInEth
       )
     : "Loading";
-  console.log("depositRewardsApr", depositRewardsApr);
-
-  console.log("aaveRes", aaveRes);
 
   const depositApr = stats ? utils.formatUnits(stats.depositRate, 27) : "0";
   const borrowApr = stats ? utils.formatUnits(stats.borrowRate, 27) : "0";
@@ -173,32 +170,27 @@ const AddressPage: React.FC = () => {
     }
 
     const totalDepApr = parseFloat(depositApr) + parseFloat(depositRewardsApr);
-    console.log("totalDepApr", totalDepApr);
     const totalDepYield =
       totalDepApr * parseFloat(stats.totalCollateralETH.toString());
-    console.log("totalDepYield", totalDepYield);
     const totalBorrowApr = parseFloat(borrowRewardsApr) - parseFloat(borrowApr);
-    console.log("totalBorrowApr", totalBorrowApr);
     const totalBorrowYield =
       totalBorrowApr * parseFloat(stats.totalDebtETH.toString());
-    console.log("totalBorrowYield", totalBorrowYield);
 
-    console.log(
-      "parseFloat(stats.totalCollateralETH.toString())",
-      parseFloat(stats.totalCollateralETH.toString())
-    );
-    console.log(
-      "parseFloat(stats.totalDebtETH.toString())",
-      parseFloat(stats.totalDebtETH.toString())
-    );
     const initialCapital =
       parseFloat(stats.totalCollateralETH.toString()) -
       parseFloat(stats.totalDebtETH.toString());
-    console.log("initialCapital", initialCapital);
+
     const percent = (totalDepYield + totalBorrowYield) / initialCapital;
-    console.log("percent", percent);
+
     return percent;
-  }, [stats, reserve]);
+  }, [
+    stats,
+    reserve,
+    borrowApr,
+    borrowRewardsApr,
+    depositApr,
+    depositRewardsApr,
+  ]);
 
   if (!stats) {
     return (
