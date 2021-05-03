@@ -3,6 +3,8 @@ import { FormEvent, useMemo, useState } from "react";
 import { useBalances } from "../../context/BalanceContext";
 import { useUser } from "../../context/UserContext";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../../utils/constants";
+import { formatMatic } from "../../utils/format";
+import styles from "../../styles/widget.module.scss";
 
 const Withdraw: React.FC = () => {
   const user = useUser();
@@ -38,7 +40,9 @@ const Withdraw: React.FC = () => {
 
   return (
     <div>
-      <h3>Withdraw WMATIC</h3>
+      <h3 className={styles.title}>
+        Withdraw <span>Shares Balance: {formatMatic(sharesBalance)}</span>
+      </h3>
       {loading && <p>LOADING</p>}
       <form onSubmit={handleSubmit}>
         <input

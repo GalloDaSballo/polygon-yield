@@ -76,7 +76,6 @@ const getAPR = async (): Promise<any> => {
   const { healthFactor } = result;
 
   const { currentLiquidationThreshold } = result;
-  console.log("currentLiquidationThreshold", currentLiquidationThreshold);
   const { ltv } = result;
 
   const max = currentLiquidationThreshold.gt("0")
@@ -154,7 +153,6 @@ const AddressPage: React.FC = () => {
         aaveRes[0].price.priceInEth
       )
     : "Loading";
-  console.log("debtRewardsApy", borrowRewardsApr);
 
   const depositRewardsApr = reserve
     ? aave.v2.calculateIncentivesAPY(

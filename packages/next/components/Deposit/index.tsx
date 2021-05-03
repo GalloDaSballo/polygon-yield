@@ -8,6 +8,8 @@ import {
   CONTRACT_ABI,
   CONTRACT_ADDRESS,
 } from "../../utils/constants";
+import { formatMatic } from "../../utils/format";
+import styles from "../../styles/widget.module.scss";
 
 const Deposit: React.FC = () => {
   const user = useUser();
@@ -28,7 +30,7 @@ const Deposit: React.FC = () => {
       user.provider.getSigner()
     );
     const allowance = await wMatic.allowance(user.address, CONTRACT_ADDRESS);
-    console.log("allowance", allowance.toString());
+
     if (allowance.lt(BNAmount)) {
       // Require allowance
       setLoading(true);
@@ -47,7 +49,6 @@ const Deposit: React.FC = () => {
     setLoading(true);
     const result = await depositRequest.wait();
     setLoading(false);
-    console.log("result", result);
   };
 
   if (!user) {
@@ -56,7 +57,9 @@ const Deposit: React.FC = () => {
 
   return (
     <div>
-      <h3>Deposit WMATIC</h3>
+      <h3 className={styles.title}>
+        Deposit WMATIC <span>Balance: {formatMatic(wMaticBalance)}</span>
+      </h3>
       {loading && <p>LOADING</p>}
       <form onSubmit={handleSubmit}>
         <input

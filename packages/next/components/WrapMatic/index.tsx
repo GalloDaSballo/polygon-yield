@@ -3,6 +3,8 @@ import { FormEvent, useMemo, useState } from "react";
 import { useBalances } from "../../context/BalanceContext";
 import { useUser } from "../../context/UserContext";
 import { WMATIC_ADDR, WMATIC_ABI } from "../../utils/constants";
+import { formatMatic } from "../../utils/format";
+import styles from "../../styles/widget.module.scss";
 
 const WrapMatic: React.FC = () => {
   const user = useUser();
@@ -35,7 +37,21 @@ const WrapMatic: React.FC = () => {
 
   return (
     <div>
-      <h3>Wrap Matic</h3>
+      <h3 className={styles.title}>
+        Wrap Matic{" "}
+        <button
+          type="button"
+          onClick={() =>
+            setAmount(
+              utils.formatEther(
+                maticBalance.sub(utils.parseUnits("1", "ether"))
+              )
+            )
+          }
+        >
+          Balance: {formatMatic(maticBalance)}
+        </button>
+      </h3>
       {loading && <p>LOADING</p>}
       <form onSubmit={handleSubmit}>
         <input

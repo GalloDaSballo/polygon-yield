@@ -3,6 +3,8 @@ import { FormEvent, useMemo, useState } from "react";
 import { useBalances } from "../../context/BalanceContext";
 import { useUser } from "../../context/UserContext";
 import { WMATIC_ADDR, WMATIC_ABI } from "../../utils/constants";
+import { formatMatic } from "../../utils/format";
+import styles from "../../styles/widget.module.scss";
 
 const UnwrapMatic: React.FC = () => {
   const user = useUser();
@@ -34,7 +36,9 @@ const UnwrapMatic: React.FC = () => {
 
   return (
     <div>
-      <h3>Unwrap Matic</h3>
+      <h3 className={styles.title}>
+        Unwrap Matic <span>Balance: {formatMatic(wMaticBalance)}</span>
+      </h3>
       {loading && <p>LOADING</p>}
       <form onSubmit={handleSubmit}>
         <input
