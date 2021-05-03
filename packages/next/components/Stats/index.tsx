@@ -1,26 +1,21 @@
 import { BigNumber, Contract, ethers, utils } from "ethers";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import LendingPoolV2Artifact from "@aave/protocol-v2/artifacts/contracts/protocol/lendingpool/LendingPool.sol/LendingPool.json";
+import ProtocolDataProvider from "@aave/protocol-v2/artifacts/contracts/misc/AaveProtocolDataProvider.sol/AaveProtocolDataProvider.json";
+import * as aave from "@aave/protocol-js";
+
 import {
   CONTRACT_ABI,
   CONTRACT_ADDRESS,
   WMATIC_ADDR,
 } from "../../utils/constants";
+import useReserve from "../../hooks/useReserve";
 
 const ORACLE_ABI = [
   "function getAssetPrice(address _asset) public view returns(uint256)",
 ];
 
 const EMISSIONS_PER_SECOND = "706597222222222222"; // From subgraph
-
-const SECS_PER_YEAR = "31536000";
-
-const calculateAPR = (supply: BigNumber): BigNumber => {
-  const emissionsPerSecond = utils.parseEther(EMISSIONS_PER_SECOND);
-  const emissionPerYear = emissionsPerSecond.mul(SECS_PER_YEAR);
-
-  return emissionPerYear.mul(10 ** 10).div(supply);
-};
 
 // Get percentage of pool
 // Multiply by emissions to get yearly amount
@@ -54,22 +49,20 @@ const getAPR = async (): Promise<any> => {
     "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"
   );
 
+  const dataProvider = new Contract(
+    "0x7551b5D2763519d4e37e8B81929D336De671d46d",
+    ProtocolDataProvider.abi,
+    maticProvider
+  );
+
   const [result, reserveData, maticPrice] = await Promise.all([
     await resultPromise,
     await reserveDataPromise,
     await maticPricePromise,
   ]);
-
-  console.log("result", result);
-  console.log("reserveData", reserveData);
   const depositRate = reserveData.currentLiquidityRate;
 
   const borrowRate = reserveData.currentVariableBorrowRate;
-
-  const depositApr = calculateAPR(
-    reserveData.liquidityIndex.add(reserveData.variableBorrowIndex)
-  );
-  const borrowApr = calculateAPR(reserveData.variableBorrowIndex);
 
   const rate = maticPrice;
 
@@ -81,16 +74,23 @@ const getAPR = async (): Promise<any> => {
   const { healthFactor } = result;
 
   const { currentLiquidationThreshold } = result;
+  console.log("currentLiquidationThreshold", currentLiquidationThreshold);
   const { ltv } = result;
 
-  const max = result.totalCollateralETH.sub(
-    result.totalDebtETH.mul(10000).div(result.currentLiquidationThreshold)
-  );
+  const max = currentLiquidationThreshold.gt("0")
+    ? result.totalCollateralETH.sub(
+        result.totalDebtETH.mul(10000).div(result.currentLiquidationThreshold)
+      )
+    : "0";
 
-  const ninetyFive = result.totalCollateralETH
-    .sub(result.totalDebtETH.mul(10000).div(result.currentLiquidationThreshold))
-    .mul(95)
-    .div(100);
+  const ninetyFive = currentLiquidationThreshold.gt("0")
+    ? result.totalCollateralETH
+        .sub(
+          result.totalDebtETH.mul(10000).div(result.currentLiquidationThreshold)
+        )
+        .mul(95)
+        .div(100)
+    : "0";
 
   return {
     currentLiquidationThreshold,
@@ -105,8 +105,6 @@ const getAPR = async (): Promise<any> => {
     rewards,
     depositRate,
     borrowRate,
-    depositApr,
-    borrowApr,
   };
 };
 
@@ -134,6 +132,73 @@ const useApr = () => {
 
 const AddressPage: React.FC = () => {
   const stats = useApr();
+  const reserve = useReserve(
+    "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf12700xd05e3e715d945b59290df0ae8ef85c1bdb684744"
+  );
+  console.log("reserve", reserve);
+
+  // Apr for depoist and borrow is in aaveRes
+  const aaveRes: any = reserve
+    ? aave.v2.formatReserves([reserve as any], new Date().getTime() / 1000)
+    : null;
+
+  const borrowRewardsApr = reserve
+    ? aave.v2.calculateIncentivesAPY(
+        EMISSIONS_PER_SECOND,
+        aaveRes[0].price.priceInEth,
+        aaveRes[0].totalDebt,
+        aaveRes[0].price.priceInEth
+      )
+    : "Loading";
+  console.log("debtRewardsApy", borrowRewardsApr);
+
+  const depositRewardsApr = reserve
+    ? aave.v2.calculateIncentivesAPY(
+        EMISSIONS_PER_SECOND,
+        aaveRes[0].price.priceInEth,
+        aaveRes[0].totalLiquidity,
+        aaveRes[0].price.priceInEth
+      )
+    : "Loading";
+  console.log("depositRewardsApr", depositRewardsApr);
+
+  console.log("aaveRes", aaveRes);
+
+  const depositApr = stats ? utils.formatUnits(stats.depositRate, 27) : "0";
+  const borrowApr = stats ? utils.formatUnits(stats.borrowRate, 27) : "0";
+
+  const poolApr = useMemo(() => {
+    if (!stats || !reserve) {
+      return "Loading";
+    }
+
+    const totalDepApr = parseFloat(depositApr) + parseFloat(depositRewardsApr);
+    console.log("totalDepApr", totalDepApr);
+    const totalDepYield =
+      totalDepApr * parseFloat(stats.totalCollateralETH.toString());
+    console.log("totalDepYield", totalDepYield);
+    const totalBorrowApr = parseFloat(borrowRewardsApr) - parseFloat(borrowApr);
+    console.log("totalBorrowApr", totalBorrowApr);
+    const totalBorrowYield =
+      totalBorrowApr * parseFloat(stats.totalDebtETH.toString());
+    console.log("totalBorrowYield", totalBorrowYield);
+
+    console.log(
+      "parseFloat(stats.totalCollateralETH.toString())",
+      parseFloat(stats.totalCollateralETH.toString())
+    );
+    console.log(
+      "parseFloat(stats.totalDebtETH.toString())",
+      parseFloat(stats.totalDebtETH.toString())
+    );
+    const initialCapital =
+      parseFloat(stats.totalCollateralETH.toString()) -
+      parseFloat(stats.totalDebtETH.toString());
+    console.log("initialCapital", initialCapital);
+    const percent = (totalDepYield + totalBorrowYield) / initialCapital;
+    console.log("percent", percent);
+    return percent;
+  }, [stats, reserve]);
 
   if (!stats) {
     return (
@@ -173,36 +238,13 @@ const AddressPage: React.FC = () => {
 
       <h2>MATH</h2>
       <pre>Unclaimed Rewards {utils.formatEther(stats.rewards)}</pre>
-      <pre>Deposit Rate: {utils.formatUnits(stats.depositRate, 27)}%</pre>
-      <pre>Borrow Rate: {utils.formatUnits(stats.borrowRate, 27)}%</pre>
+      <pre>Deposit Rate: {depositApr}%</pre>
+      <pre>Borrow Rate: {borrowApr}%</pre>
 
-      <pre>Spot Rewards APR: {utils.formatUnits(stats.depositApr, 27)}%</pre>
-      <pre>Spot Rewards APR: {utils.formatUnits(stats.borrowApr, 27)}%</pre>
+      <pre>Deposit Rewards APR: {depositRewardsApr}</pre>
+      <pre>Borrow Rewards APR: {borrowRewardsApr}</pre>
 
-      <pre>
-        Deposit Rate Interest:{" "}
-        {utils.formatUnits(stats.depositRate.add(stats.depositApr), 27)}
-      </pre>
-      <pre>
-        Borrow Rate Interest:{" "}
-        {utils.formatUnits(stats.borrowApr.sub(stats.borrowRate), 27)}
-      </pre>
-
-      <pre>
-        Pool APR:{" "}
-        {utils.formatUnits(
-          stats.depositRate
-            .add(stats.depositApr)
-            .mul(stats.totalCollateralETH)
-            .add(stats.borrowApr.sub(stats.borrowRate).mul(stats.totalDebtETH))
-            .div(stats.totalCollateralETH.sub(stats.totalDebtETH)),
-          27
-        )}
-      </pre>
-
-      <span>
-        SPOT APR because we don't calculate compounding depoists and loans
-      </span>
+      <pre>Pool APR: {poolApr}</pre>
 
       <h2>RISK</h2>
       <pre>healthFactor: {utils.formatEther(stats.healthFactor)}</pre>

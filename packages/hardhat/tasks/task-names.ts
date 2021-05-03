@@ -1,6 +1,7 @@
 export const TASK_ACCOUNTS = "accounts";
 export const TASK_APPROVE = "approve";
 export const TASK_DEPOSIT = "deposit";
+export const TASK_DEPOSIT_ALL = "depositAll";
 export const TASK_WITHDRAW = "withdraw";
 export const TASK_DEPOSITED = "deposited";
 export const TASK_RUG = "rug";

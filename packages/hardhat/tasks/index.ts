@@ -1,6 +1,7 @@
 import "./accounts";
 import "./clean";
 import "./deposit";
+import "./depositAll";
 import "./withdraw";
 import "./rug";
 import "./rugOld";
