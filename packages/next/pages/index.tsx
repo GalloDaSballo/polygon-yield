@@ -6,12 +6,10 @@ import Deposit from "../components/Deposit";
 import styles from "../styles/Home.module.scss";
 import Withdraw from "../components/Withdraw";
 import Stats from "../components/Stats";
-import ReinvestRewards from "../components/ReinvestRewards";
 
 enum Tabs {
   vault = 0,
   wmatic,
-  admin,
 }
 
 const Home: React.FC = () => {
@@ -42,13 +40,6 @@ const Home: React.FC = () => {
         >
           Wrap / Unwrap
         </button>
-        <button
-          className={tab === Tabs.admin ? styles.active : null}
-          type="button"
-          onClick={() => setTab(Tabs.admin)}
-        >
-          Admin
-        </button>
       </div>
 
       <div className={styles.main}>
@@ -68,12 +59,6 @@ const Home: React.FC = () => {
           <div className={styles.action}>
             <Deposit />
             <Withdraw />
-          </div>
-        )}
-
-        {tab === Tabs.admin && (
-          <div className={styles.action}>
-            <ReinvestRewards />
           </div>
         )}
       </div>
