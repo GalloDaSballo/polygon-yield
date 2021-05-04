@@ -75,34 +75,12 @@ const getAPR = async (): Promise<any> => {
   const { availableBorrowsETH } = result;
   const { healthFactor } = result;
 
-  const { currentLiquidationThreshold } = result;
-  const { ltv } = result;
-
-  const max = currentLiquidationThreshold.gt("0")
-    ? result.totalCollateralETH.sub(
-        result.totalDebtETH.mul(10000).div(result.currentLiquidationThreshold)
-      )
-    : "0";
-
-  const ninetyFive = currentLiquidationThreshold.gt("0")
-    ? result.totalCollateralETH
-        .sub(
-          result.totalDebtETH.mul(10000).div(result.currentLiquidationThreshold)
-        )
-        .mul(95)
-        .div(100)
-    : "0";
-
   return {
-    currentLiquidationThreshold,
     totalCollateralETH,
     availableBorrowsETH,
     healthFactor,
-    ltv,
     totalDebtETH,
     rate,
-    max,
-    ninetyFive,
     rewards,
     depositRate,
     borrowRate,
@@ -165,6 +143,8 @@ const AddressPage: React.FC = () => {
 
   const depositApr = stats ? utils.formatUnits(stats.depositRate, 27) : "0";
   const borrowApr = stats ? utils.formatUnits(stats.borrowRate, 27) : "0";
+
+  console.log("aaveRes", aaveRes);
 
   const poolApr = useMemo(() => {
     if (!stats || !reserve) {
@@ -281,7 +261,7 @@ const AddressPage: React.FC = () => {
                 .div(parseFloat(stats.rate))
             )}
           </pre>
-          {advanced && <pre>ltv: {stats.ltv.toString()}</pre>}
+          {advanced && <pre>ltv: {aaveRes?.[0]?.baseLTVasCollateral}</pre>}
         </div>
       )}
     </div>

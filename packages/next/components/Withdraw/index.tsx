@@ -41,7 +41,13 @@ const Withdraw: React.FC = () => {
   return (
     <div>
       <h3 className={styles.title}>
-        Withdraw <span>Shares Balance: {formatMatic(sharesBalance)}</span>
+        Withdraw{" "}
+        <button
+          type="button"
+          onClick={() => setAmount(utils.formatEther(sharesBalance))}
+        >
+          Shares Balance: {formatMatic(sharesBalance)}
+        </button>
       </h3>
       {loading && <p>LOADING</p>}
       <form onSubmit={handleSubmit}>

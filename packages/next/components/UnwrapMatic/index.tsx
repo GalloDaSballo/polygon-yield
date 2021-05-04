@@ -37,7 +37,13 @@ const UnwrapMatic: React.FC = () => {
   return (
     <div>
       <h3 className={styles.title}>
-        Unwrap Matic <span>Balance: {formatMatic(wMaticBalance)}</span>
+        Unwrap Matic{" "}
+        <button
+          type="button"
+          onClick={() => setAmount(utils.formatEther(wMaticBalance))}
+        >
+          Balance: {formatMatic(wMaticBalance)}
+        </button>
       </h3>
       {loading && <p>LOADING</p>}
       <form onSubmit={handleSubmit}>
