@@ -1,4 +1,4 @@
-import { BigNumber, Contract, ethers, utils } from "ethers";
+import { Contract, ethers, utils } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import LendingPoolV2Artifact from "@aave/protocol-v2/artifacts/contracts/protocol/lendingpool/LendingPool.sol/LendingPool.json";
 import ProtocolDataProvider from "@aave/protocol-v2/artifacts/contracts/misc/AaveProtocolDataProvider.sol/AaveProtocolDataProvider.json";
