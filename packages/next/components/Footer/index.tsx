@@ -6,6 +6,15 @@ const Footer: React.FC = () => {
       <div className={styles.footerLinks}>
         <div>
           <a
+            href="https://github.com/GalloDaSballo/polygon-yield"
+            target="_blank"
+            rel="nofollow noreferrer"
+          >
+            Code
+          </a>
+        </div>
+        <div>
+          <a
             href="mailto:alex@entreprenerd.xyz"
             target="_blank"
             rel="nofollow noreferrer"
@@ -20,6 +29,15 @@ const Footer: React.FC = () => {
             rel="nofollow noreferrer"
           >
             Documentation
+          </a>
+        </div>
+        <div>
+          <a
+            href="https://discord.gg/fMmhcJfukN"
+            target="_blank"
+            rel="nofollow noreferrer"
+          >
+            Discord
           </a>
         </div>
       </div>

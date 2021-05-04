@@ -25,6 +25,7 @@ const Home: React.FC = () => {
       </Head>
 
       <h1>Earn more Matic, with your Matic</h1>
+      <p>⚠️Code unadited⚠️</p>
 
       <div className={styles.tabs}>
         <button
