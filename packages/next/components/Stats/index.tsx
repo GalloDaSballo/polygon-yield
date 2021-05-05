@@ -1,7 +1,6 @@
-import { Contract, ethers, utils } from "ethers";
+import { BigNumber, Contract, ethers, utils } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import LendingPoolV2Artifact from "@aave/protocol-v2/artifacts/contracts/protocol/lendingpool/LendingPool.sol/LendingPool.json";
-import ProtocolDataProvider from "@aave/protocol-v2/artifacts/contracts/misc/AaveProtocolDataProvider.sol/AaveProtocolDataProvider.json";
 import * as aave from "@aave/protocol-js";
 
 import {
@@ -19,18 +18,55 @@ const ORACLE_ABI = [
 
 const EMISSIONS_PER_SECOND = "706597222222222222"; // From subgraph
 
+const maticProvider = new ethers.providers.JsonRpcProvider(
+  "https://rpc-mainnet.maticvigil.com/v1/c3465edfbaa8d0612c382aad7cb5f876418eb4f4"
+);
+
+const priceOracle = new Contract(
+  "0x0229F777B0fAb107F9591a41d5F02E4e98dB6f2d",
+  ORACLE_ABI,
+  maticProvider
+);
+
+const usePriceOracle = (): string => {
+  const [rate, setRate] = useState("1");
+
+  useEffect(() => {
+    const fetchPrice = async () => {
+      const maticPricePromise = await priceOracle.getAssetPrice(
+        "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"
+      );
+      setRate(maticPricePromise.toString());
+    };
+    fetchPrice();
+  }, []);
+  return rate;
+};
+
+const vault = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, maticProvider);
+
+const useRewards = (): BigNumber => {
+  const [rewards, setRewards] = useState(BigNumber.from("0"));
+
+  const fetchRewards = async () => {
+    const rewardsData = await vault.getRewardsBalance();
+    setRewards(rewardsData);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchRewards();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return rewards;
+};
+
 // Get percentage of pool
 // Multiply by emissions to get yearly amount
 
 const getAPR = async (): Promise<any> => {
-  const maticProvider = new ethers.providers.JsonRpcProvider(
-    "https://rpc-mainnet.maticvigil.com/v1/c3465edfbaa8d0612c382aad7cb5f876418eb4f4"
-  );
-  const vault = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, maticProvider);
-
-  const rewardsData = await vault.getRewardsBalance();
-  const rewards = rewardsData;
-
   const lendingPool = new Contract(
     "0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf",
     LendingPoolV2Artifact.abi,
@@ -41,32 +77,13 @@ const getAPR = async (): Promise<any> => {
 
   const reserveDataPromise = lendingPool.getReserveData(WMATIC_ADDR);
 
-  const priceOracle = new Contract(
-    "0x0229F777B0fAb107F9591a41d5F02E4e98dB6f2d",
-    ORACLE_ABI,
-    maticProvider
-  );
-
-  const maticPricePromise = priceOracle.getAssetPrice(
-    "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"
-  );
-
-  const dataProvider = new Contract(
-    "0x7551b5D2763519d4e37e8B81929D336De671d46d",
-    ProtocolDataProvider.abi,
-    maticProvider
-  );
-
-  const [result, reserveData, maticPrice] = await Promise.all([
+  const [result, reserveData] = await Promise.all([
     await resultPromise,
     await reserveDataPromise,
-    await maticPricePromise,
   ]);
   const depositRate = reserveData.currentLiquidityRate;
 
   const borrowRate = reserveData.currentVariableBorrowRate;
-
-  const rate = maticPrice;
 
   const { totalCollateralETH } = result;
 
@@ -80,8 +97,6 @@ const getAPR = async (): Promise<any> => {
     availableBorrowsETH,
     healthFactor,
     totalDebtETH,
-    rate,
-    rewards,
     depositRate,
     borrowRate,
   };
@@ -100,10 +115,7 @@ const useApr = () => {
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      fetchStats();
-    }, 2000);
-    return () => clearInterval(interval);
+    fetchStats();
   }, []);
 
   return stats;
@@ -111,6 +123,8 @@ const useApr = () => {
 
 const AddressPage: React.FC = () => {
   const stats = useApr();
+  const rate = usePriceOracle();
+  const rewards = useRewards();
   const [advanced, setAdvanced] = useState(false); // Extra data
 
   const reserve = useReserve(
@@ -210,11 +224,9 @@ const AddressPage: React.FC = () => {
           utils.formatEther(
             stats.totalCollateralETH
               .mul("1000000000000000000")
-              .div(stats.rate)
-              .sub(
-                stats.totalDebtETH.mul("1000000000000000000").div(stats.rate)
-              )
-              .add(stats.rewards)
+              .div(rate)
+              .sub(stats.totalDebtETH.mul("1000000000000000000").div(rate))
+              .add(rewards)
           )
         )}
       </pre>
@@ -222,7 +234,7 @@ const AddressPage: React.FC = () => {
         Total Deposited:{" "}
         {formatStringAmount(
           utils.formatEther(
-            stats.totalCollateralETH.mul("1000000000000000000").div(stats.rate)
+            stats.totalCollateralETH.mul("1000000000000000000").div(rate)
           )
         )}
       </pre>
@@ -230,10 +242,10 @@ const AddressPage: React.FC = () => {
         Total Borrowed:{" "}
         {formatStringAmount(
           utils.formatEther(
-            stats.totalDebtETH.mul("1000000000000000000").div(stats.rate)
+            stats.totalDebtETH.mul("1000000000000000000").div(rate)
           )
         )}
-        <pre>Unclaimed Rewards {utils.formatEther(stats.rewards)}</pre>
+        <pre>Unclaimed Rewards {utils.formatEther(rewards)}</pre>
       </pre>
 
       {advanced && (
@@ -258,7 +270,7 @@ const AddressPage: React.FC = () => {
             {utils.formatEther(
               stats.availableBorrowsETH
                 .mul("1000000000000000000")
-                .div(parseFloat(stats.rate))
+                .div(parseFloat(rate))
             )}
           </pre>
           {advanced && <pre>ltv: {aaveRes?.[0]?.baseLTVasCollateral}</pre>}
