@@ -4,13 +4,13 @@ import { ERC20, Myield } from "../typechain";
 import { TASK_WITHDRAW } from "./task-names";
 
 task(TASK_WITHDRAW, "Prints the list of accounts", async (_taskArgs, hre) => {
-    const { deployer } = await hre.getNamedAccounts();
+    const { deployer, admin } = await hre.getNamedAccounts();
     console.log("deployer", deployer)
 
-    const deployed = (await hre.ethers.getContract("Myield")) as Myield
+    const deployed = (await hre.ethers.getContract("Myield", admin)) as Myield
 
     
-    const balance = await deployed.balanceOf(deployer, { gasLimit: 1000000 })
+    const balance = await deployed.balanceOf(admin, { gasLimit: 1000000 })
     console.log("balance", balance.toString())
 
     

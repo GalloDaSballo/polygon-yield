@@ -3,21 +3,24 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-wit
 import { expect } from "chai";
 import { BigNumber } from "ethers";
 import { ethers } from "hardhat";
-import { ERC20, Myield } from "../typechain";
+import { ERC20, MyieldWMatic } from "../typechain";
 import { deploy } from "./helpers";
 
 // Testing on matic sees to have issues, we can deploy here and then run the tests
 
-describe("Unit tests for Myield", function () {
+describe("Unit tests for MyieldWMatic", function () {
     describe("I Deposit 1 Matic", function () {
-        let contract: Myield;
+        let contract: MyieldWMatic;
+        let ownerContract: MyieldWMatic;
         let admin: SignerWithAddress
         
         before(async function () {
             admin = await ethers.getNamedSigner("admin");
+            const deployer = await ethers.getNamedSigner("deployer");
             console.log("admin", admin.address)
-            contract = (await deploy("Myield", { args: [], connect: admin })) as Myield;
-            const wMatic = (await ethers.getContractAt("Myield", "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270", admin)) as ERC20
+            contract = (await deploy("MyieldWMatic", { args: [], connect: admin })) as MyieldWMatic;
+            ownerContract = (await deploy("MyieldWMatic", { args: [], connect: deployer })) as MyieldWMatic;
+            const wMatic = (await ethers.getContractAt("MyieldWMatic", "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270", admin)) as ERC20
             await (await wMatic["approve(address,uint256)"](contract.address, ethers.constants.MaxUint256)).wait()
 
             // Ensure admin balance is exactly 1.1 WMATIC
@@ -51,7 +54,7 @@ describe("Unit tests for Myield", function () {
         });
 
         it("After rebalancing, the totalValue is still very close to the previous value", async function () {
-            await (await contract["rebalance()"]({gasLimit: 5000000})).wait() // Rebalance needs more gas
+            await (await ownerContract["rebalance()"]({gasLimit: 5000000})).wait() // Rebalance needs more gas
             const balance = await contract["getTotalValue()"]()
             expect(balance.lt(BigNumber.from("1100000000000000000")) && balance.gt(BigNumber.from("100000000000000000"))).to.equal(true);
         });
@@ -67,7 +70,7 @@ describe("Unit tests for Myield", function () {
             const toWithdraw = await contract.balanceOf(admin.address)
             await (await contract["reinvestRewards()"]({gasLimit: 5000000})).wait()
             await (await contract["withdraw(uint256)"](toWithdraw, {gasLimit: 5000000})).wait()
-            const wMatic = (await ethers.getContractAt("Myield", "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270")) as ERC20
+            const wMatic = (await ethers.getContractAt("MyieldWMatic", "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270")) as ERC20
             const balance = await wMatic.balanceOf(admin.address)
             expect(balance.gt(BigNumber.from("1100000000000000000"))).to.equal(true);
         })
