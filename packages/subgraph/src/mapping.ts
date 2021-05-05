@@ -1,22 +1,26 @@
-import { NewGravatar, UpdatedGravatar } from '../generated/Gravity/Gravity'
-import { Gravatar } from '../generated/schema'
+import { DepositCall, WithdrawCall } from '../generated/Myield/Myield'
+import { Account } from '../generated/schema'
 
-export function handleNewGravatar(event: NewGravatar): void {
-  let gravatar = new Gravatar(event.params.id.toHex())
-  gravatar.owner = event.params.owner
-  gravatar.displayName = event.params.displayName
-  gravatar.imageUrl = event.params.imageUrl
-  gravatar.save()
+export function handleDeposit(event: DepositCall): void {
+  const id = event.from.toHex()
+  let account = Account.load(id)
+  if (account == null) {
+    account = new Account(id)
+  }
+  account.deposited =  account.deposited.plus(event.inputs.amount)
+  account.shares = event.outputs.value0
+  // This provides us with a ratio
+
+  account.save()
 }
 
-export function handleUpdatedGravatar(event: UpdatedGravatar): void {
-  let id = event.params.id.toHex()
-  let gravatar = Gravatar.load(id)
-  if (gravatar == null) {
-    gravatar = new Gravatar(id)
+export function handleWithdrawal(event: WithdrawCall): void {
+  const id = event.from.toHex()
+  let account = Account.load(id)
+  if (account == null) {
+    account = new Account(id)
   }
-  gravatar.owner = event.params.owner
-  gravatar.displayName = event.params.displayName
-  gravatar.imageUrl = event.params.imageUrl
-  gravatar.save()
+
+
+ // do nothing just for now 
 }

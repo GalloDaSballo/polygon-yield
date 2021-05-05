@@ -2,13 +2,13 @@ specVersion: 0.0.2
 description: Gravatar for Ethereum
 repository: https://github.com/graphprotocol/example-subgraph
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: Myield
     network: matic
     source:
-      address: '0x9dB2A331fbD4cEA56450f3A0a9b983bC52ec7387'
+      address: "0x9dB2A331fbD4cEA56450f3A0a9b983bC52ec7387"
       abi: Myield
     mapping:
       kind: ethereum/events
@@ -18,10 +18,10 @@ dataSources:
         - Accounts
       abis:
         - name: Myield
-          file: ./abis/Myield.json
+          file: Myield/abis/Myield.json
       callHandlers:
         - function: deposit(uint256)
           handler: handleDeposit
         - function: withdraw(uint256)
           handler: handleWithdrawal
-      file: ./src/mapping.ts
+      file: Myield/Myield.wasm
