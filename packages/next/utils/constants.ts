@@ -1,4 +1,4 @@
-import maticDeployment from "@mono/hardhat/deployments/matic/Myield.json";
+import maticDeployment from "@mono/hardhat/deployments/matic/MyieldWMatic.json";
 
 export const EXPLORER_URL = "https://explorer-mainnet.maticvigil.com";
 
