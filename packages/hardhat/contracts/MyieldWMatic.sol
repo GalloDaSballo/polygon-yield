@@ -8,6 +8,7 @@ import { SafeERC20 } from "./aave/lib/SafeERC20.sol";
 import { SafeMath } from "./aave/lib/SafeMath.sol";
 import { IERC20 } from "./aave/interfaces/IERC20.sol";
 import { Ownable } from "./aave/lib/Ownable.sol";
+import { ReentrancyGuard } from "./aave/lib/ReentrancyGuard.sol";
 import { ILendingPool } from "./aave/interfaces/ILendingPool.sol";
 import { ILendingPoolAddressesProvider } from "./aave/interfaces/ILendingPoolAddressesProvider.sol";
 import { IProtocolDataProvider } from "./aave/interfaces/IProtocolDataProvider.sol";
@@ -17,7 +18,7 @@ import { IPriceOracle } from "./aave/interfaces/IPriceOracle.sol";
 
 // NOTE: onlyOwner in deposit and withdraw to prevent people from using this
 
-contract MyieldWMatic is ERC20, Ownable {
+contract MyieldWMatic is ERC20, Ownable, ReentrancyGuard {
 
   using SafeMath for uint256;
   using SafeERC20 for IERC20;
@@ -29,28 +30,56 @@ contract MyieldWMatic is ERC20, Ownable {
 
   uint256 public constant PRECISION = 1 * 10 ** 18; // PRECISION.mul(w/e).div(PRECISION) to avoid rounding
 
+  uint256 public constant MAX_BPS = 10000;
+
   uint256 public constant MIN_HEALTH = 1300000000000000000; // 1.3
 
   address public constant ADDRES_PROVIDER = 0xd05e3E715d945B59290df0ae8eF85c1BdB684744;
 
   address public constant MATIC_REWARDS = 0x357D51124f59836DeD84c8a1730D72B749d8BC23;
 
+  address public strategist = msg.sender; // Used to Rebalance Pools
+
+  address public feeRecipient = msg.sender; // Treasury
+
+  uint256 public feeBps = 500; // Starts at 5% can be changed by governance
+
   event Deposit(address indexed account, uint256 amount, uint256 shares);
   event Withdraw(address indexed account, uint256 value, uint256 shares);
-  event Harvest(uint256 rewardsAmount);
+  event Harvest(uint256 rewardsAmount, uint256 fees);
 
 
-  constructor() ERC20("MyYield WMATIC Vault With Events", "MyWMATICV2", 18) {
+  modifier onlyManagement() {
+    require(msg.sender == owner() || msg.sender == strategist, "Not in Management");
+    _;
+  }
+
+
+  constructor() ERC20("MyYield WMATIC Vault With Events", "MyYieldWMATIC", 18) {
     // Approve for deposits
     IERC20(want).safeApprove(LENDING_POOL, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
   }
 
+  /** Setters */
+  function setStrategist(address newStrategist) public onlyOwner () {
+    strategist = newStrategist;
+  }
+
+  function setFeeRecipient(address newFeeRecipient) public onlyOwner () {
+    feeRecipient = newFeeRecipient;
+  }
+
+    function setFeeBps(uint256 newFeeBps) public onlyOwner () {
+    feeBps = newFeeBps;
+  }
+
+  /** Deposit */
   function fromDepositToShares(uint256 amount) public view returns (uint256){
     return PRECISION.mul(amount).mul(totalSupply()).div(getTotalValue()).div(PRECISION);
   }
 
   // Deposit want into the pool and mint corresponding pool ownership tokens
-  function deposit(uint256 amount) public returns (uint256) {
+  function deposit(uint256 amount) public nonReentrant returns (uint256) {
     uint256 shares = 0;
 
     if(totalSupply() == 0){
@@ -68,12 +97,13 @@ contract MyieldWMatic is ERC20, Ownable {
     return shares;
   }
 
+  /** Withdrawals */
   function fromSharesToWithdrawal(uint256 shares) public view returns (uint256){
     return PRECISION.mul(shares).mul(getTotalValue()).div(totalSupply()).div(PRECISION); 
   }
 
   // Return value based as percentage of total value
-  function withdraw(uint256 shares) public returns (uint256) {
+  function withdraw(uint256 shares) public nonReentrant returns (uint256) {
     // From deposited to withdraw amount
     uint256 value = fromSharesToWithdrawal(shares);
 
@@ -103,7 +133,7 @@ contract MyieldWMatic is ERC20, Ownable {
     return value;
   }
 
-  
+  /** AAVE based View Methods */
   function getTotalValue() public view returns (uint256) {
     // Sum up amount that is deposited - owed - fees
     return balanceOfWant().add(deposited()).sub(owed());
@@ -113,7 +143,7 @@ contract MyieldWMatic is ERC20, Ownable {
     return IERC20(want).balanceOf(address(this));
   }
 
-    // Oracle rate, ETH Rate for want
+  // Oracle rate, ETH Rate for want
   function getRate() public view returns (uint256){
     // Get the oracle
     address oracleAddress = ILendingPoolAddressesProvider(ADDRES_PROVIDER).getPriceOracle();
@@ -173,30 +203,6 @@ contract MyieldWMatic is ERC20, Ownable {
     return 0;
   }
 
-
-  function rebalance() public onlyOwner {
-    _rebalance();
-  }
-
-  // Rebalance after deposits
-  function _rebalance() public {
-    // Loop on it until it's properly done
-    uint256 max_iterations = 5;
-    for(uint256 i = 0; i < max_iterations; i++){
-      uint256 toBorrow = canBorrow();
-      if(toBorrow > 0) {
-        ILendingPool(LENDING_POOL).borrow(want, toBorrow, 2, 0, address(this));
-        ILendingPool(LENDING_POOL).deposit(want, toBorrow, address(this), 0);
-      } 
-        else {
-        return;
-      }
-    }
-    //NOTE: The contract is not aware of rewards currently
-    // I.e this will auto farm but you have to withdraw as soon as rewards 
-    // are less than interest for borrowing or you'll be effectively loosing money
-  }
-
   // returns 95% of the collateral we can withdraw from aave, used to loop and repay debts
   function canRepay() public view returns (uint256) {
     (
@@ -221,8 +227,34 @@ contract MyieldWMatic is ERC20, Ownable {
     return inWant;
   }
 
+  /** Rebalance = Invest to maximize yield */
+  function rebalance() public onlyManagement {
+    _rebalance();
+  }
+
+  // Rebalance after deposits
+  function _rebalance() internal {
+    // Loop on it until it's properly done
+    uint256 max_iterations = 5;
+    for(uint256 i = 0; i < max_iterations; i++){
+      uint256 toBorrow = canBorrow();
+      if(toBorrow > 0) {
+        ILendingPool(LENDING_POOL).borrow(want, toBorrow, 2, 0, address(this));
+        ILendingPool(LENDING_POOL).deposit(want, toBorrow, address(this), 0);
+      } 
+        else {
+        return;
+      }
+    }
+    //NOTE: The contract is not aware of rewards currently
+    // I.e this will auto farm but you have to withdraw as soon as rewards 
+    // are less than interest for borrowing or you'll be effectively loosing money
+  }
+
+  
+  /** Divest = Remove from AAVE */
   // For forced withdrawals
-  function divestFromAAVE(uint256 amount) public onlyOwner {
+  function divestFromAAVE(uint256 amount) public onlyManagement {
     _divestFromAAVE(amount);
   }
 
@@ -255,31 +287,13 @@ contract MyieldWMatic is ERC20, Ownable {
     }
   }
 
-  // For admin forced withdrawals
-  function withdrawStepFromAAVE(uint256 canRepay) public onlyOwner {
+  // For admin forced divesting from AAVE
+  function withdrawStepFromAAVE(uint256 canRepay) public onlyManagement {
     _withdrawStepFromAAVE(canRepay);
   }
 
-  function reinvestRewards() public {
-    address dataProvider = ILendingPoolAddressesProvider(ADDRES_PROVIDER).getAddress("0x1");
-    (address aToken, , address variableDebt) = IProtocolDataProvider(dataProvider).getReserveTokensAddresses(want);
-    address[] memory list = new address[](2);
-    list[0] = aToken;
-    list[1] = variableDebt;
-
-    emit Harvest(getRewardsBalance());
-
-    IAaveIncentivesController(MATIC_REWARDS).claimRewards(
-      list, 
-      type(uint).max,
-      address(this)
-    );
-
-    // Reinvest
-    ILendingPool(LENDING_POOL).deposit(want, balanceOfWant(), address(this), 0);
-  }
-
-  // Copy pasted for debugging / Visibility
+  /** Reinvest Rewards, normally called Harvest */
+    // Copy pasted for debugging / Visibility
   function getRewardsBalance() public view returns (uint256) {
     address dataProvider = ILendingPoolAddressesProvider(ADDRES_PROVIDER).getAddress("0x1");
     (address aToken, , address variableDebt) = IProtocolDataProvider(dataProvider).getReserveTokensAddresses(want);
@@ -291,25 +305,53 @@ contract MyieldWMatic is ERC20, Ownable {
     return totalRewards;
   }
 
+  function reinvestRewards() public {
+    address dataProvider = ILendingPoolAddressesProvider(ADDRES_PROVIDER).getAddress("0x1");
+    (address aToken, , address variableDebt) = IProtocolDataProvider(dataProvider).getReserveTokensAddresses(want);
+    address[] memory list = new address[](2);
+    list[0] = aToken;
+    list[1] = variableDebt;
+
+    uint256 totalRewards = IAaveIncentivesController(MATIC_REWARDS).getRewardsBalance(list, address(this));
+
+
+    IAaveIncentivesController(MATIC_REWARDS).claimRewards(
+      list, 
+      totalRewards,
+      address(this)
+    );
+
+    uint256 fees = PRECISION.mul(totalRewards).mul(feeBps).div(MAX_BPS).div(PRECISION);
+    IERC20(want).safeTransfer(feeRecipient, fees);
+    emit Harvest(totalRewards, fees);
+
+    // If you want to receive a performance fee, this is where
+
+    // Reinvest
+    ILendingPool(LENDING_POOL).deposit(want, totalRewards.sub(fees), address(this), 0);
+  }
+
+
   /** Basic AAVE Methods */
-  function withdrawFromAAVE(uint256 amount) public onlyOwner { 
+  function withdrawFromAAVE(uint256 amount) public onlyManagement {
     ILendingPool(LENDING_POOL).withdraw(want, amount, address(this));
   }
 
-  function repayAAVE(uint256 amount) public onlyOwner { 
+  function repayAAVE(uint256 amount) public onlyManagement {
     ILendingPool(LENDING_POOL).repay(want, amount, 2, address(this));
   }
 
   // Deposit in aave pool in case funds are not being invested
-  function depositAll() public { 
+  function depositAll() public {
     uint256 balance = balanceOfWant();
     if(balance > 0) {
       ILendingPool(LENDING_POOL).deposit(want, balance, address(this), 0);
     } 
   }
 
+  /** UNSAFE METHODS */
   // Used mostly as safety mechanism in case some other operations goes wrong
-  function rug(address asset, address destination) public onlyOwner returns (uint256){
+  function rug(address asset, address destination) public onlyOwner nonReentrant returns (uint256){
     uint256 amount = IERC20(asset).balanceOf(address(this));
     IERC20(asset).safeTransfer(destination, amount);
 
