@@ -103,7 +103,7 @@ const getAPR = async (): Promise<any> => {
   };
 };
 
-const useApr = () => {
+const useStats = () => {
   const [stats, setStats] = useState<any | null>(null);
 
   const fetchStats = async () => {
@@ -123,7 +123,7 @@ const useApr = () => {
 };
 
 const AddressPage: React.FC = () => {
-  const stats = useApr();
+  const stats = useStats();
   const rate = usePriceOracle();
   const rewards = useRewards();
   const [advanced, setAdvanced] = useState(false); // Extra data
