@@ -10,10 +10,17 @@
       padding: 24px 12px;
       margin-right: 25px;
 
+      &:last-of-type {
+        margin-right: 0;
+      }
+
       h3 {
         margin-top: 0;
       }
     }
   }
-  
+  .links {
+    text-align: center;
+    padding-bottom: 24px;
+  }
 }

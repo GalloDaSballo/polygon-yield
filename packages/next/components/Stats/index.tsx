@@ -218,7 +218,7 @@ const AddressPage: React.FC = () => {
           WMATIC VAULT V1 📝
         </a>
       </h2>
-      <h2 onClick={() => setAdvanced(!advanced)}>STATS</h2>
+      <h2 onClick={() => setAdvanced(!advanced)}>STATS 🤓</h2>
       <span>All stats are expressed in MATIC unless otherwise noted</span>
       <pre>
         TVL:{" "}

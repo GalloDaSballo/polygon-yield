@@ -1,3 +1,4 @@
+import Link from "next/link";
 import useProtocolStats from "../../hooks/useProtocolStats";
 import { formatMatic } from "../../utils/format";
 import styles from "./GraphStats.module.scss";
@@ -28,6 +29,11 @@ const GraphStats: React.FC = () => {
           {formatMatic(stats.lifetimeTreasury)}
         </div>
       </main>
+      <div className={styles.links}>
+        <Link href="/leaderboard">
+          <a>Leaderboard</a>
+        </Link>
+      </div>
     </div>
   );
 };
