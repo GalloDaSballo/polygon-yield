@@ -69,3 +69,52 @@ export class Account extends Entity {
     this.set("shares", Value.fromBigInt(value));
   }
 }
+
+export class Vault extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Vault entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Vault entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Vault", id.toString(), this);
+  }
+
+  static load(id: string): Vault | null {
+    return store.get("Vault", id) as Vault | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get treasury(): BigInt {
+    let value = this.get("treasury");
+    return value.toBigInt();
+  }
+
+  set treasury(value: BigInt) {
+    this.set("treasury", Value.fromBigInt(value));
+  }
+
+  get totalHarvested(): BigInt {
+    let value = this.get("totalHarvested");
+    return value.toBigInt();
+  }
+
+  set totalHarvested(value: BigInt) {
+    this.set("totalHarvested", Value.fromBigInt(value));
+  }
+}

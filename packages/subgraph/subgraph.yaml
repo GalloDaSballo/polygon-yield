@@ -5,11 +5,12 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Myield
+    name: MyieldWMatic
     network: matic
     source:
-      address: '0x9dB2A331fbD4cEA56450f3A0a9b983bC52ec7387'
-      abi: Myield
+      address: '0x4db105f4f675c42f7A3DC5653Ad1BA6A84C8Aab5'
+      abi: MyieldWMatic
+      startBlock: 14168671
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -17,11 +18,13 @@ dataSources:
       entities:
         - Accounts
       abis:
-        - name: Myield
-          file: ./abis/Myield.json
-      callHandlers:
-        - function: deposit(uint256)
+        - name: MyieldWMatic
+          file: ./abis/MyieldWMatic.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,uint256)
           handler: handleDeposit
-        - function: withdraw(uint256)
+        - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdrawal
+        - event: Harvest(uint256,uint256)
+          handler: handleHarvest
       file: ./src/mapping.ts

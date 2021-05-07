@@ -4,3 +4,9 @@ type Account @entity {
   earned: BigInt!
   shares: BigInt!
 }
+
+type Vault @entity {
+  id: ID!
+  treasury: BigInt!
+  totalHarvested: BigInt!
+}
