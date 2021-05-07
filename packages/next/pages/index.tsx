@@ -7,7 +7,7 @@ import styles from "../styles/Home.module.scss";
 import Withdraw from "../components/Withdraw";
 import Stats from "../components/Stats";
 import GraphStats from "../components/GraphStats";
-import { useUser } from "../context/UserContext";
+import { useLogin, useUser } from "../context/UserContext";
 import HowItWorks from "../components/HowItWorks";
 import Tech from "../components/Tech";
 
@@ -19,6 +19,7 @@ enum Tabs {
 const Home: React.FC = () => {
   const [tab, setTab] = useState<Tabs>(Tabs.vault);
   const user = useUser();
+  const login = useLogin();
 
   return (
     <div className={styles.container}>
@@ -63,19 +64,35 @@ const Home: React.FC = () => {
           <Stats />
         </div>
 
-        {/* Actions */}
-        {tab === Tabs.wmatic && (
-          <div className={styles.action}>
-            <WrapMatic />
-            <UnwrapMatic />
+        {!user && (
+          <div className={`${styles.action} ${styles.buttonContainer}`}>
+            <button
+              type="button"
+              onClick={() => login()}
+              className={styles.metamaskButton}
+            >
+              Login with Metamask
+            </button>
           </div>
         )}
 
-        {tab === Tabs.vault && (
-          <div className={styles.action}>
-            <Deposit />
-            <Withdraw />
-          </div>
+        {user && (
+          <>
+            {/* Actions */}
+            {tab === Tabs.wmatic && (
+              <div className={styles.action}>
+                <WrapMatic />
+                <UnwrapMatic />
+              </div>
+            )}
+
+            {tab === Tabs.vault && (
+              <div className={styles.action}>
+                <Deposit />
+                <Withdraw />
+              </div>
+            )}
+          </>
         )}
       </div>
       <div>

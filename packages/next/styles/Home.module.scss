@@ -40,6 +40,14 @@
 .action {
   margin-left: 25px;
   align-self: center;
+  &.buttonContainer {
+    text-align: center;
+  }
+  .metamaskButton{
+    padding: 17px 38px;
+    background: #222222;
+    color: #fff;
+  }
 }
 
 
@@ -75,14 +83,39 @@
 
 .table {
   display: grid;
+  .active {
+    text-decoration: underline;
+  }
+
+  .arrow {
+    max-width: 12px;
+    margin-left: 12px;
+
+    &.down {
+      transform: rotate(180deg);
+    }
+  }
+
   > div {
+
+
+    padding: 12px 24px;
     display: flex;
     justify-content: space-around;
     text-decoration: left;
-    
+    &:nth-of-type(2n+1){
+      background: #F1F3FF 0% 0% no-repeat padding-box;
+      
+    }
+
+    &.tableHead {
+      background-color: #dddddd;
+    }
+
     > div {
       flex: 1
     }
+
 
   }
 }

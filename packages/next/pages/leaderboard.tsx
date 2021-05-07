@@ -1,8 +1,25 @@
-import { BigNumber } from "@ethersproject/bignumber";
 import { useState } from "react";
 import useLeaderboard from "../hooks/useLeaderboard";
 import styles from "../styles/Home.module.scss";
 import { formatMatic } from "../utils/format";
+
+const showArrow = (
+  name: string,
+  active: string,
+  direction: string
+): JSX.Element => {
+  if (name !== active) {
+    return null;
+  }
+
+  return (
+    <img
+      alt={`Sort By ${direction}`}
+      src="/images/arrow-up.svg"
+      className={`${styles.arrow} ${direction === "desc" ? styles.down : ""}`}
+    />
+  );
+};
 
 const LeaderboardPage: React.FC = () => {
   const [orderBy, setOrderBy] = useState<"shares" | "earned" | "deposited">(
@@ -23,15 +40,17 @@ const LeaderboardPage: React.FC = () => {
         <h2>Leaderboard</h2>
       </div>
       <div className={styles.table}>
-        <div>
+        <div className={styles.tableHead}>
           <div
             onClick={() =>
               orderBy === "shares"
                 ? toggleOrderDirection()
                 : setOrderBy("shares")
             }
+            className={orderBy === "shares" ? styles.active : null}
           >
             Shares
+            {showArrow("shares", orderBy, orderDirection)}
           </div>
           <div
             onClick={() =>
@@ -39,8 +58,10 @@ const LeaderboardPage: React.FC = () => {
                 ? toggleOrderDirection()
                 : setOrderBy("deposited")
             }
+            className={orderBy === "deposited" ? styles.active : null}
           >
             Deposited
+            {showArrow("deposited", orderBy, orderDirection)}
           </div>
           <div
             onClick={() =>
@@ -48,8 +69,10 @@ const LeaderboardPage: React.FC = () => {
                 ? toggleOrderDirection()
                 : setOrderBy("earned")
             }
+            className={orderBy === "earned" ? styles.active : null}
           >
             Earned
+            {showArrow("earned", orderBy, orderDirection)}
           </div>
         </div>
         {leaderBoard.map((account) => (
