@@ -15,7 +15,7 @@ const Tech: React.FC = () => {
         </div>
         <div>
           <h3>The Graph</h3>
-          <img src="/images/TheGraph.png" alt="The Graph" />
+          <img src="/images/thegraph.png" alt="The Graph" />
         </div>
       </div>
     </div>
