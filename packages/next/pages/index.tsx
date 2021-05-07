@@ -34,9 +34,7 @@ const Home: React.FC = () => {
           Polygon rewards
         </p>
       </div>
-      <div>
-        <Tech />
-      </div>
+
       <div>
         <GraphStats />
       </div>
@@ -79,6 +77,9 @@ const Home: React.FC = () => {
             <Withdraw />
           </div>
         )}
+      </div>
+      <div>
+        <Tech />
       </div>
       <HowItWorks />
     </div>
