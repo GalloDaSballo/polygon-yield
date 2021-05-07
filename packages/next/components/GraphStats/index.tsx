@@ -24,10 +24,10 @@ const GraphStats: React.FC = () => {
           <h3>Lifetime Earned</h3>
           {formatMatic(stats.lifetimeHarvested)}
         </div>
-        <div>
+        {/* <div>
           <h3>Treasury Earned</h3>
           {formatMatic(stats.lifetimeTreasury)}
-        </div>
+        </div> */}
       </main>
       <div className={styles.links}>
         <Link href="/leaderboard">
