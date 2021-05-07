@@ -2,6 +2,7 @@ import { BigNumber, Contract, ethers, utils } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import LendingPoolV2Artifact from "@aave/protocol-v2/artifacts/contracts/protocol/lendingpool/LendingPool.sol/LendingPool.json";
 import * as aave from "@aave/protocol-js";
+import styles from "./Stats.module.scss";
 
 import {
   CONTRACT_ABI,
@@ -191,14 +192,14 @@ const AddressPage: React.FC = () => {
 
   if (!stats) {
     return (
-      <div>
+      <div className={styles.container}>
         <h2>
           <a
             href={`${EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
             target="_blank"
             rel="nofollow noreferrer"
           >
-            WMATIC VAULT V1: {CONTRACT_ADDRESS}
+            WMATIC VAULT V1 📝
           </a>
         </h2>
         <p>Loading</p>
@@ -207,14 +208,14 @@ const AddressPage: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className={styles.container}>
       <h2>
         <a
           href={`${EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
           target="_blank"
           rel="nofollow noreferrer"
         >
-          WMATIC VAULT V1: {CONTRACT_ADDRESS}
+          WMATIC VAULT V1 📝
         </a>
       </h2>
       <h2 onClick={() => setAdvanced(!advanced)}>STATS</h2>

@@ -22,9 +22,11 @@ const Home: React.FC = () => {
         <title>Myield - Earn Matic with your Matic</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <h1>Earn more Matic, with your Matic</h1>
-      <p>⚠️Code unadited⚠️</p>
+      <div className={styles.masthead}>
+        <h1>Earn more Matic, with your Matic</h1>
+        <p>⚠️Code unadited⚠️</p>
+        <p>Simply deposit Matic in the vault and we'll farm rewards for you!</p>
+      </div>
       <div>
         <GraphStats />
       </div>
@@ -47,7 +49,7 @@ const Home: React.FC = () => {
       </div>
 
       <div className={styles.main}>
-        <div>
+        <div className={styles.stats}>
           <Stats />
         </div>
 
