@@ -19,11 +19,19 @@ const Header: React.FC = () => {
       <Link href="/">
         <a>MyYield</a>
       </Link>
+      <Link href="/leaderboard">
+        <a>Leaderboard</a>
+      </Link>
       {error && <span>{handleConnetionError(error)}</span>}
       {user && (
         <div>
           <div className={styles.commands}>
-            Connected as: {String(user?.address).substring(0, 6)}...
+            <span className={styles.accountName}>
+              Connected as: {String(user?.address).substring(0, 6)}...
+            </span>
+            <Link href={`/stats/${user?.address}`}>
+              <a>View your Stats</a>
+            </Link>
             <span className={styles.userDetails}>
               <span>Matic: {formatStringAmount(utils.formatEther(matic))}</span>
               <span>

@@ -1,0 +1,9 @@
+.container {
+  main {
+    display: flex;
+    padding: 25px 0;
+    > div {
+      flex: 1;
+    }
+  }
+}

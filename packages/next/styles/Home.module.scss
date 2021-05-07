@@ -1,7 +1,7 @@
 .container {
   padding: 24px 42px;
   
-  h1, p {
+  > h1, > p {
     text-align: center;
   }
 }
@@ -48,5 +48,19 @@
     button {
       margin: 6px 0;
     }
+  }
+}
+
+.table {
+  display: grid;
+  > div {
+    display: flex;
+    justify-content: space-around;
+    text-decoration: left;
+    
+    > div {
+      flex: 1
+    }
+
   }
 }

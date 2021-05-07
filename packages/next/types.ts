@@ -51,3 +51,16 @@ export type ComputedReserveData = {
   vIncentivesAPY: string;
   sIncentivesAPY: string;
 } & ReserveData;
+
+export type ProtocolData = {
+  lifetimeUsers: string;
+  lifetimeTreasury: string;
+  lifetimeDeposited: string;
+  lifetimeHarvested: string;
+};
+
+export type AccountData = {
+  deposited: string;
+  shares: string;
+  earned: string;
+};

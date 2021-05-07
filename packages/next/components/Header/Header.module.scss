@@ -10,6 +10,9 @@
 
   .commands {
     display: flex;
+    .accountName {
+      margin-right: 25px;
+    }
     .userDetails {
       > span { 
         margin-left: 25px;
