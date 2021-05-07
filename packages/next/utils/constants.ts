@@ -2,8 +2,11 @@ import maticDeployment from "@mono/hardhat/deployments/matic/MyieldWMatic.json";
 
 export const EXPLORER_URL = "https://explorer-mainnet.maticvigil.com";
 
-export const SUBGRAPH_URL =
+export const AAVE_SUBGRAPH_URL =
   "https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic";
+
+export const MYIELD_SUBGRAPH_URL =
+  "https://api.thegraph.com/subgraphs/name/gallodasballo/myield-v1";
 
 export const CONTRACT_ADDRESS = maticDeployment.address;
 export const CONTRACT_ABI = maticDeployment.abi;

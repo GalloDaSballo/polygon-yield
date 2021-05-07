@@ -198,7 +198,7 @@ const AddressPage: React.FC = () => {
             target="_blank"
             rel="nofollow noreferrer"
           >
-            {CONTRACT_ADDRESS}
+            WMATIC VAULT V1: {CONTRACT_ADDRESS}
           </a>
         </h2>
         <p>Loading</p>
@@ -214,7 +214,7 @@ const AddressPage: React.FC = () => {
           target="_blank"
           rel="nofollow noreferrer"
         >
-          {CONTRACT_ADDRESS}
+          WMATIC VAULT V1: {CONTRACT_ADDRESS}
         </a>
       </h2>
       <h2 onClick={() => setAdvanced(!advanced)}>STATS</h2>

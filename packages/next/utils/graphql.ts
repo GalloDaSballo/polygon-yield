@@ -1,8 +1,8 @@
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
-import { SUBGRAPH_URL } from "./constants";
+import { AAVE_SUBGRAPH_URL } from "./constants";
 
 export const client = new ApolloClient({
-  uri: SUBGRAPH_URL,
+  uri: AAVE_SUBGRAPH_URL,
   cache: new InMemoryCache(),
 });
 

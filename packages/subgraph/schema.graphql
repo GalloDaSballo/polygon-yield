@@ -10,3 +10,11 @@ type Vault @entity {
   treasury: BigInt!
   totalHarvested: BigInt!
 }
+
+type Protocol @entity {
+  id: ID!
+  lifetimeUsers: BigInt! ## Sum of all users ever
+  lifetimeDeposited: BigInt! ## Sum of all deposits ever
+  lifetimeHarvested: BigInt! ## Sum of all harvested funds
+  lifetimeTreasury: BigInt! ## Sum of all funds earned and sent to treasury
+}

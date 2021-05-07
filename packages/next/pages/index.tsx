@@ -6,6 +6,7 @@ import Deposit from "../components/Deposit";
 import styles from "../styles/Home.module.scss";
 import Withdraw from "../components/Withdraw";
 import Stats from "../components/Stats";
+import GraphStats from "../components/GraphStats";
 
 enum Tabs {
   vault = 0,
@@ -24,6 +25,8 @@ const Home: React.FC = () => {
 
       <h1>Earn more Matic, with your Matic</h1>
       <p>⚠️Code unadited⚠️</p>
+
+      <GraphStats />
 
       <div className={styles.tabs}>
         <button
