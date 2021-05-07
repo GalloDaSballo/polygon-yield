@@ -4,8 +4,6 @@ import { Account, Vault, Protocol } from '../generated/schema'
 
 const PROTOCOL_V1_ID = "v1"
 
-const valuePerShare = (deposited: BigInt, shares: BigInt): BigInt => deposited.div(shares)
-
 export function handleDeposit(event: Deposit): void {
   let protocol = Protocol.load(PROTOCOL_V1_ID)
   if(protocol == null) {
@@ -44,8 +42,8 @@ export function handleWithdrawal(event: Withdraw): void {
     account.earned = BigInt.fromI32(0)
   }
 
-  const value = valuePerShare(account.deposited, account.shares)
-  const depositInitialValue = value.times(event.params.shares)
+  // initial value is deposited / shares * shares withdrawing
+  const depositInitialValue = account.deposited.times(event.params.shares).div(account.shares)
   const newValue = event.params.value
 
   account.earned = account.earned.plus(newValue.minus(depositInitialValue))

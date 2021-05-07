@@ -1,3 +1,4 @@
+import { BigNumber } from "@ethersproject/bignumber";
 import { useState } from "react";
 import useLeaderboard from "../hooks/useLeaderboard";
 import styles from "../styles/Home.module.scss";
@@ -10,14 +11,46 @@ const LeaderboardPage: React.FC = () => {
   const [orderDirection, setOrderDirection] = useState<"desc" | "asc">("desc");
   const leaderBoard = useLeaderboard(orderBy, orderDirection);
   console.log("leaderBoard", leaderBoard);
+
+  const toggleOrderDirection = () => {
+    return orderDirection === "desc"
+      ? setOrderDirection("asc")
+      : setOrderDirection("desc");
+  };
   return (
     <div className={styles.container}>
-      <h2>Leaderboard</h2>
+      <div>
+        <h2>Leaderboard</h2>
+      </div>
       <div className={styles.table}>
         <div>
-          <div>Shares</div>
-          <div>Deposited</div>
-          <div>Earned</div>
+          <div
+            onClick={() =>
+              orderBy === "shares"
+                ? toggleOrderDirection()
+                : setOrderBy("shares")
+            }
+          >
+            Shares
+          </div>
+          <div
+            onClick={() =>
+              orderBy === "deposited"
+                ? toggleOrderDirection()
+                : setOrderBy("deposited")
+            }
+          >
+            Deposited
+          </div>
+          <div
+            onClick={() =>
+              orderBy === "earned"
+                ? toggleOrderDirection()
+                : setOrderBy("earned")
+            }
+          >
+            Earned
+          </div>
         </div>
         {leaderBoard.map((account) => (
           <div>

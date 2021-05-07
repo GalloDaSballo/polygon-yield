@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
             target="_blank"
             rel="nofollow noreferrer"
           >
-            Where's My Previous Deposit?
+            ⚠️⚠️⚠️⚠️Where's My Previous Deposit?⚠️⚠️⚠️⚠️
           </a>
         </div>
       </div>
