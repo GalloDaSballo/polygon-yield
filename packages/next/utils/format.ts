@@ -1,4 +1,4 @@
-import { BigNumber } from "@ethersproject/bignumber";
+import { BigNumberish } from "@ethersproject/bignumber";
 import { utils } from "ethers";
 
 // // Credits: https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
@@ -16,5 +16,5 @@ export const formatStringAmount = (string: string): string =>
     twoDecimals(Math.round(parseFloat(string) * 100) / 100)
   )}`;
 
-export const formatMatic = (amount: BigNumber): string =>
+export const formatMatic = (amount: BigNumberish): string =>
   formatStringAmount(utils.formatEther(amount));

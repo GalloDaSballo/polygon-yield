@@ -40,6 +40,15 @@ const Footer: React.FC = () => {
             Discord
           </a>
         </div>
+        <div>
+          <a
+            href="https://v1.myield.finance/"
+            target="_blank"
+            rel="nofollow noreferrer"
+          >
+            ⚠️⚠️⚠️⚠️Where's My Previous Deposit?⚠️⚠️⚠️⚠️
+          </a>
+        </div>
       </div>
     </footer>
   );

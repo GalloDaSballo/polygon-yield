@@ -2,6 +2,7 @@ import { BigNumber, Contract, ethers, utils } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import LendingPoolV2Artifact from "@aave/protocol-v2/artifacts/contracts/protocol/lendingpool/LendingPool.sol/LendingPool.json";
 import * as aave from "@aave/protocol-js";
+import styles from "./Stats.module.scss";
 
 import {
   CONTRACT_ABI,
@@ -103,7 +104,7 @@ const getAPR = async (): Promise<any> => {
   };
 };
 
-const useApr = () => {
+const useStats = () => {
   const [stats, setStats] = useState<any | null>(null);
 
   const fetchStats = async () => {
@@ -123,7 +124,7 @@ const useApr = () => {
 };
 
 const AddressPage: React.FC = () => {
-  const stats = useApr();
+  const stats = useStats();
   const rate = usePriceOracle();
   const rewards = useRewards();
   const [advanced, setAdvanced] = useState(false); // Extra data
@@ -191,14 +192,14 @@ const AddressPage: React.FC = () => {
 
   if (!stats) {
     return (
-      <div>
+      <div className={styles.container}>
         <h2>
           <a
             href={`${EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
             target="_blank"
             rel="nofollow noreferrer"
           >
-            {CONTRACT_ADDRESS}
+            WMATIC VAULT V1 📝
           </a>
         </h2>
         <p>Loading</p>
@@ -207,14 +208,14 @@ const AddressPage: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className={styles.container}>
       <h2>
         <a
           href={`${EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
           target="_blank"
           rel="nofollow noreferrer"
         >
-          {CONTRACT_ADDRESS}
+          WMATIC VAULT V1 📝
         </a>
       </h2>
       <h2 onClick={() => setAdvanced(!advanced)}>STATS</h2>

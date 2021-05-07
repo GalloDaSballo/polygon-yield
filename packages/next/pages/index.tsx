@@ -6,6 +6,7 @@ import Deposit from "../components/Deposit";
 import styles from "../styles/Home.module.scss";
 import Withdraw from "../components/Withdraw";
 import Stats from "../components/Stats";
+import GraphStats from "../components/GraphStats";
 
 enum Tabs {
   vault = 0,
@@ -21,9 +22,14 @@ const Home: React.FC = () => {
         <title>Myield - Earn Matic with your Matic</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <h1>Earn more Matic, with your Matic</h1>
-      <p>⚠️Code unadited⚠️</p>
+      <div className={styles.masthead}>
+        <h1>Earn more Matic, with your Matic</h1>
+        <p>⚠️Code unadited⚠️</p>
+        <p>Simply deposit Matic in the vault and we'll farm rewards for you!</p>
+      </div>
+      <div>
+        <GraphStats />
+      </div>
 
       <div className={styles.tabs}>
         <button
@@ -43,7 +49,7 @@ const Home: React.FC = () => {
       </div>
 
       <div className={styles.main}>
-        <div>
+        <div className={styles.stats}>
           <Stats />
         </div>
 

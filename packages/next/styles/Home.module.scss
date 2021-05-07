@@ -1,8 +1,12 @@
 .container {
   padding: 24px 42px;
   
-  h1, p {
+  .masthead {
     text-align: center;
+    background-color: #2b6def;
+    color: #fff;
+    padding: 48px 59px;
+    border-radius: 12px;
   }
 }
 .main {
@@ -17,17 +21,24 @@
 
 .tabs {
   text-align: center;
+  margin: 32px auto;
 
   button {
     margin: 0 12px;
-    
+    padding: 17px 97px;
+
     &.active {
-      text-decoration: underline;
+      background-color: #2b6def;
+      color: #fff;
     }
   }
 }
 
+.stats {
+  margin-right: 25px;
+}
 .action {
+  margin-left: 25px;
   align-self: center;
 }
 
@@ -36,9 +47,20 @@
 
   .container {
     padding: 12px 15px;
+    main {
+      flex-direction: column;
+      > div {
+        margin-right: 0!important;
+      }
+    }
   }
+
   .main {
     flex-direction: column-reverse;
+  }
+
+  .stats, .action {
+    margin: auto;
   }
 
   .tabs {
@@ -48,5 +70,19 @@
     button {
       margin: 6px 0;
     }
+  }
+}
+
+.table {
+  display: grid;
+  > div {
+    display: flex;
+    justify-content: space-around;
+    text-decoration: left;
+    
+    > div {
+      flex: 1
+    }
+
   }
 }

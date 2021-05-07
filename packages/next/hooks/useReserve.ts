@@ -5,7 +5,7 @@ import { GET_RESERVE_DATA } from "../utils/graphql";
 const useReserve = (reserveAddress: string): ReserveData | null => {
   const { data } = useQuery(GET_RESERVE_DATA, {
     variables: { reserveAddress },
-    pollInterval: 2000,
+    pollInterval: 10000,
     fetchPolicy: "cache-and-network",
   });
 
