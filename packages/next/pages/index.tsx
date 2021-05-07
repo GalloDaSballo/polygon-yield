@@ -9,6 +9,7 @@ import Stats from "../components/Stats";
 import GraphStats from "../components/GraphStats";
 import { useUser } from "../context/UserContext";
 import HowItWorks from "../components/HowItWorks";
+import Tech from "../components/Tech";
 
 enum Tabs {
   vault = 0,
@@ -32,6 +33,9 @@ const Home: React.FC = () => {
           Myield manages your Matic on AAVE to earn the highest amount of
           Polygon rewards
         </p>
+      </div>
+      <div>
+        <Tech />
       </div>
       <div>
         <GraphStats />
