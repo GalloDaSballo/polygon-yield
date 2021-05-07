@@ -12,10 +12,10 @@ const GraphStats: React.FC = () => {
   return (
     <div className={styles.container}>
       <main>
-        <div>
+        {/* <div>
           <h3>Users</h3>
           {stats.lifetimeUsers}
-        </div>
+        </div> */}
         <div>
           <h3>Lifetime TVL</h3>
           {formatMatic(stats.lifetimeDeposited)}
