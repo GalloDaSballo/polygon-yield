@@ -4,6 +4,16 @@
     padding: 25px 0;
     > div {
       flex: 1;
+      background: #FFFFFF 0% 0% no-repeat padding-box;
+      box-shadow: 0px 8px 19px #515E9D29;
+      border-radius: 12px;
+      padding: 24px 12px;
+      margin-right: 25px;
+
+      h3 {
+        margin-top: 0;
+      }
     }
   }
+  
 }
