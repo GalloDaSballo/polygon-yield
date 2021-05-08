@@ -60,6 +60,7 @@ export type ProtocolData = {
 };
 
 export type AccountData = {
+  id: string;
   deposited: string;
   shares: string;
   earned: string;

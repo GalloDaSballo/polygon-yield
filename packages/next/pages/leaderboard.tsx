@@ -41,6 +41,7 @@ const LeaderboardPage: React.FC = () => {
       </div>
       <div className={styles.table}>
         <div className={styles.tableHead}>
+          <div>Address</div>
           <div
             onClick={() =>
               orderBy === "shares"
@@ -77,6 +78,7 @@ const LeaderboardPage: React.FC = () => {
         </div>
         {leaderBoard.map((account) => (
           <div>
+            <div>{account.id.substring(0, 8)}</div>
             <div title={account.shares}>{formatMatic(account.shares)}</div>
             <div title={account.deposited}>
               {formatMatic(account.deposited)}
