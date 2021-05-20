@@ -78,12 +78,13 @@ const LeaderboardPage: React.FC = () => {
         </div>
         {leaderBoard.map((account) => (
           <div>
-            <div>{account.id.substring(0, 8)}</div>
-            <div title={account.shares}>{formatMatic(account.shares)}</div>
+            {/* <div>{account.id.substring(0, 8)}</div> */}
+            <div>{account.id}</div>
+            {/* <div title={account.shares}>{formatMatic(account.shares)}</div>
             <div title={account.deposited}>
               {formatMatic(account.deposited)}
             </div>
-            <div title={account.earned}>{formatMatic(account.earned)}</div>
+            <div title={account.earned}>{formatMatic(account.earned)}</div> */}
           </div>
         ))}
       </div>

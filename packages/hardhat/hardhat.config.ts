@@ -9,6 +9,9 @@ import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 import "solidity-coverage";
 import "@nomiclabs/hardhat-etherscan";
+import "@openzeppelin/hardhat-upgrades";
+import "@tenderly/hardhat-tenderly";
+
 import { HardhatNetworkAccountsUserConfig } from "hardhat/types";
 
 const accounts = {
