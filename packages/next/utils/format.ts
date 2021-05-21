@@ -11,10 +11,14 @@ const twoDecimals = (number: number): string => number.toFixed(2);
 export const formatPercent = (number: number): string =>
   `${numberWithCommas(twoDecimals(Math.round(number * 10000) / 100))}%`; // 10000 because we go from 0.XX to XX.00
 
-export const formatStringAmount = (string: string): string =>
-  `${numberWithCommas(
-    twoDecimals(Math.round(parseFloat(string) * 100) / 100)
-  )}`;
+export const formatStringAmount = (string: string): string => {
+  if (parseInt(string.substring(0, 1), 10) > 0) {
+    return `${numberWithCommas(
+      twoDecimals(Math.round(parseFloat(string) * 100) / 100)
+    )}`;
+  }
+  return string;
+};
 
 export const formatMatic = (amount: BigNumberish): string =>
   formatStringAmount(utils.formatEther(amount));

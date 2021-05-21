@@ -32,3 +32,6 @@ import "./harvestAt";
 import "./vitalsAt";
 import "./rebalanceAt";
 import "./transferToWallet";
+import "./removeStratsAt";
+import "./setMinHealthAt";
+import "./setStrategistAt";

@@ -31,3 +31,6 @@ export const TASK_HARVEST_AT = "harvestAt";
 export const TASK_VITALS_AT = "vitalsAt";
 export const TASK_REBALANCE_AT = "rebalanceAt";
 export const TASK_TRANSFER_TO_WALLET = "transferToWallet";
+export const TASK_REMOVE_STRATS_AT = "removeStratsAt";
+export const TASK_SET_MIN_HEALTH_AT = "setMinHealthAt";
+export const TASK_SET_STRATEGIST_AT = "setStrategistAt";

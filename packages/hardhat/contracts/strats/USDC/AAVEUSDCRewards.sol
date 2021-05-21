@@ -107,7 +107,9 @@ contract AAVEUSDCRewards is IStrategy, Ownable, ReentrancyGuard {
     feedDecimals = newFeedDecimals;
   }
 
-
+  function setMinHealth(uint256 newMinHealth) external onlyManagement {
+    minHealth = newMinHealth;
+  }
 
   /** IStrategy */
   // Deposit new Principal

@@ -2,57 +2,50 @@ import { utils, Contract, BigNumber } from "ethers";
 import { FormEvent, useMemo, useState } from "react";
 import { useBalances } from "../../context/BalanceContext";
 import { useUser } from "../../context/UserContext";
-import { WMATIC_ABI } from "../../utils/constants";
-import { VAULT_ABI } from "../../utils/vaults";
+import {
+  WMATIC_ADDR,
+  WMATIC_ABI,
+  CONTRACT_ABI,
+  CONTRACT_ADDRESS,
+} from "../../utils/constants";
 import { formatMatic } from "../../utils/format";
 import styles from "../../styles/widget.module.scss";
-import { Vault } from "../../types";
-import useERC20Balance from "../../hooks/useERC20Balance";
 
-const Deposit: React.FC<{ vault: Vault }> = ({ vault }) => {
+const Deposit: React.FC = () => {
   const user = useUser();
-  const wantBalance = useERC20Balance(user, vault.want.address);
-
+  const { wMatic: wMaticBalance } = useBalances();
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const BNAmount = useMemo(
-    () =>
-      amount
-        ? utils.parseUnits(amount, vault.want.decimals)
-        : BigNumber.from("0"),
-    [amount, vault]
+    () => (amount ? utils.parseUnits(amount, "ether") : BigNumber.from("0")),
+    [amount]
   );
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const wantContract = new Contract(
-      vault.want.address,
+    const wMatic = new Contract(
+      WMATIC_ADDR,
       WMATIC_ABI,
       user.provider.getSigner()
     );
-    const allowance = await wantContract.allowance(user.address, vault.address);
-    console.log("allowance", allowance.toString());
+    const allowance = await wMatic.allowance(user.address, CONTRACT_ADDRESS);
+
     if (allowance.lt(BNAmount)) {
       // Require allowance
       setLoading(true);
-      const allowanceRequest = await wantContract.approve(
-        vault.address,
-        BNAmount
-      );
+      const allowanceRequest = await wMatic.approve(CONTRACT_ADDRESS, BNAmount);
       await allowanceRequest.wait();
       setLoading(false);
     }
 
-    const vaultContract = new Contract(
-      vault.address,
-      VAULT_ABI,
+    const vault = new Contract(
+      CONTRACT_ADDRESS,
+      CONTRACT_ABI,
       user.provider.getSigner()
     );
 
-    const depositRequest = await vaultContract.deposit(BNAmount, {
-      gasLimit: 1000000,
-    });
+    const depositRequest = await vault.deposit(BNAmount, { gasLimit: 1000000 });
     setLoading(true);
     const result = await depositRequest.wait();
     setLoading(false);
@@ -65,14 +58,12 @@ const Deposit: React.FC<{ vault: Vault }> = ({ vault }) => {
   return (
     <div>
       <h3 className={styles.title}>
-        Deposit {vault.want.symbol}{" "}
+        Deposit WMATIC{" "}
         <button
           type="submit"
-          onClick={() =>
-            setAmount(utils.formatUnits(wantBalance, vault.want.decimals))
-          }
+          onClick={() => setAmount(utils.formatEther(wMaticBalance))}
         >
-          Balance: {utils.formatUnits(wantBalance, vault.want.decimals)}
+          Balance: {formatMatic(wMaticBalance)}
         </button>
       </h3>
       {loading && <p>LOADING</p>}
@@ -81,11 +72,7 @@ const Deposit: React.FC<{ vault: Vault }> = ({ vault }) => {
           type="number"
           step="0.000000000000000001"
           min="0"
-          max={
-            wantBalance
-              ? utils.formatUnits(wantBalance, vault.want.decimals)
-              : "0"
-          }
+          max={wMaticBalance ? utils.formatEther(wMaticBalance) : "0"}
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />

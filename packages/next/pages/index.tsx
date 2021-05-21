@@ -1,26 +1,13 @@
 import Head from "next/head";
-import { useState } from "react";
-import UnwrapMatic from "../components/UnwrapMatic";
-import WrapMatic from "../components/WrapMatic";
-import Deposit from "../components/Deposit";
 import styles from "../styles/Home.module.scss";
-import Withdraw from "../components/Withdraw";
-import Stats from "../components/Stats";
 import GraphStats from "../components/GraphStats";
 import { useLogin, useUser } from "../context/UserContext";
 import HowItWorks from "../components/HowItWorks";
 import Tech from "../components/Tech";
+import vaults from "../utils/vaults";
+import Vault from "../components/Vault";
 
-enum Tabs {
-  vault = 0,
-  wmatic,
-}
-
-const Home: React.FC = () => {
-  const [tab, setTab] = useState<Tabs>(Tabs.vault);
-  const user = useUser();
-  const login = useLogin();
-
+const NewHome: React.FC = () => {
   return (
     <div className={styles.container}>
       <Head>
@@ -40,60 +27,10 @@ const Home: React.FC = () => {
         <GraphStats />
       </div>
 
-      {user && (
-        <div className={styles.tabs}>
-          <button
-            className={tab === Tabs.vault ? styles.active : null}
-            type="button"
-            onClick={() => setTab(Tabs.vault)}
-          >
-            Deposit / Withdraw
-          </button>
-          <button
-            className={tab === Tabs.wmatic ? styles.active : null}
-            type="button"
-            onClick={() => setTab(Tabs.wmatic)}
-          >
-            Wrap / Unwrap
-          </button>
-        </div>
-      )}
-
       <div className={styles.main}>
-        <div className={styles.stats}>
-          <Stats />
-        </div>
-
-        {!user && (
-          <div className={`${styles.action} ${styles.buttonContainer}`}>
-            <button
-              type="button"
-              onClick={() => login()}
-              className={styles.metamaskButton}
-            >
-              Login with Metamask
-            </button>
-          </div>
-        )}
-
-        {user && (
-          <>
-            {/* Actions */}
-            {tab === Tabs.wmatic && (
-              <div className={styles.action}>
-                <WrapMatic />
-                <UnwrapMatic />
-              </div>
-            )}
-
-            {tab === Tabs.vault && (
-              <div className={styles.action}>
-                <Deposit />
-                <Withdraw />
-              </div>
-            )}
-          </>
-        )}
+        {vaults.map((vault) => (
+          <Vault vault={vault} />
+        ))}
       </div>
       <div>
         <Tech />
@@ -103,4 +40,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default NewHome;

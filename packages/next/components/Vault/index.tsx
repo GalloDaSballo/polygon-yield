@@ -2,31 +2,29 @@ import styles from "./Vault.module.scss";
 import Stats from "../Stats";
 import Deposit from "../Deposit";
 import Withdraw from "../Withdraw";
+import { Vault } from "../../types";
 
-const Vault: React.FC<{ address: string; want: string }> = ({
-  address,
-  want,
-}) => {
+const VaultComponent: React.FC<{ vault: Vault }> = ({ vault }) => {
   return (
     <div className={styles.vault}>
       <div className={styles.header}>
         <div className={styles.headerEntry}>
-          <img src="/" alt={want} />
-          <h3>{want}</h3>
+          <img src={vault.logoURI} alt={vault.name} />
+          <h3>{vault.name}</h3>
         </div>
         <div>
           <h3>Total Deposited</h3>
         </div>
       </div>
       <div className={styles.body}>
-        <Stats address={address} want={want} />
+        <Stats vault={vault} />
         <div>
-          <Deposit address={address} want={want} />
-          <Withdraw address={address} want={want} />
+          <Deposit vault={vault} />
+          <Withdraw vault={vault} />
         </div>
       </div>
     </div>
   );
 };
 
-export default Vault;
+export default VaultComponent;
