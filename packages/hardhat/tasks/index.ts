@@ -27,3 +27,8 @@ import "./viewStrats";
 import "./removeStrats";
 import "./withdrawPreview";
 import "./stratHarvest";
+import "./rebalanceStrat";
+import "./harvestAt";
+import "./vitalsAt";
+import "./rebalanceAt";
+import "./transferToWallet";
