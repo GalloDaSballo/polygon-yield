@@ -89,14 +89,22 @@
 @media screen and (max-width: 1024px) {
 
   .container {
-    padding: 12px 15px;
-    main {
-      flex-direction: column;
-      > div {
-        margin-right: 0!important;
+    padding: 0;
+    .blue, .content {
+      padding: 27px;
+    }
+
+    .masthead {
+      padding: 50px 32px;
+      border-radius: 12px;
+      h1 {
+        font-size: 31px;
+        line-height: 37px;
       }
     }
   }
+
+
 
   .main {
     flex-direction: column-reverse;

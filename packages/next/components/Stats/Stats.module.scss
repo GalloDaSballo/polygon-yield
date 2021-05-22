@@ -2,6 +2,10 @@
   display: flex;
   padding: 16px 18px 13px;
 
+  @media screen and (max-width: 1024px) {
+    flex-direction: column;
+  }
+
   > div {
     flex: 1;
     align-self: center;
@@ -27,6 +31,7 @@
       box-shadow: 0 5px 13px 0 rgba(0, 0, 0, 0.1);
       border-radius: 36px;
       height: 36px;
+      width: 36px;
       line-height: 33px;
     }
     img {

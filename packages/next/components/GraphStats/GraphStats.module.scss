@@ -36,4 +36,15 @@
     text-align: center;
     padding-bottom: 24px;
   }
+
+  @media screen and (max-width: 1024px) {
+    main {
+      flex-direction: column;
+      > div {
+        margin-right: 0!important;
+        border-left: none;
+      }
+    }
+  }
+  
 }
