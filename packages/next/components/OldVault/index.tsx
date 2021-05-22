@@ -9,16 +9,16 @@ import DepositOld from "../Deposit/old";
 import WithdrawOld from "../Withdraw/old";
 import StatsOld from "../Stats/old";
 
-const wMATICIcon =
-  "https://assets.coingecko.com/coins/images/4713/large/Matic.png?1553498071";
-
 const OldVault: React.FC = () => {
   const [showDeposit, setShowDeposit] = useState(false);
 
   return (
     <div className={styles.vault}>
       <div className={styles.body}>
-        <div onClick={() => setShowDeposit(!showDeposit)}>
+        <div
+          className={styles.click}
+          onClick={() => setShowDeposit(!showDeposit)}
+        >
           <StatsOld arrowDown={!showDeposit} />
         </div>
         {showDeposit && (

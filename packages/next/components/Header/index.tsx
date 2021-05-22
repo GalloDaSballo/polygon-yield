@@ -17,7 +17,9 @@ const Header: React.FC = () => {
   return (
     <header className={styles.header}>
       <Link href="/">
-        <a>MyYield</a>
+        <a>
+          <img className={styles.logo} src="/images/logo.png" alt="Myield" />
+        </a>
       </Link>
       {error && <span>{handleConnetionError(error)}</span>}
       {user && (

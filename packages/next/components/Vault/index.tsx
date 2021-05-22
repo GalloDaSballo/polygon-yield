@@ -10,7 +10,10 @@ const VaultComponent: React.FC<{ vault: Vault }> = ({ vault }) => {
   return (
     <div className={styles.vault}>
       <div className={styles.body}>
-        <div onClick={() => setShowDeposit(!showDeposit)}>
+        <div
+          className={styles.click}
+          onClick={() => setShowDeposit(!showDeposit)}
+        >
           <Stats vault={vault} arrowDown={!showDeposit} />
         </div>
         {showDeposit && (

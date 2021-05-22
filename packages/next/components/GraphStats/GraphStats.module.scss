@@ -4,11 +4,11 @@
     padding: 25px 0;
     > div {
       flex: 1;
-      background: #FFFFFF 0% 0% no-repeat padding-box;
-      box-shadow: 0px 8px 19px #515E9D29;
-      border-radius: 12px;
+      color: #fff;
+      border-radius: 15px;
       padding: 24px 12px;
       margin-right: 25px;
+      text-align: center;
 
       &:last-of-type {
         margin-right: 0;
@@ -16,6 +16,15 @@
 
       h3 {
         margin-top: 0;
+        color: #aeb8f6;
+        font-weight: 13px;
+        line-height: 18px;
+      }
+
+      p {
+        font-size: 23px;
+        font-weight: 700;
+        line-height: 28px;      
       }
     }
   }

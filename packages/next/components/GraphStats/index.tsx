@@ -12,28 +12,23 @@ const GraphStats: React.FC = () => {
   return (
     <div className={styles.container}>
       <main>
-        {/* <div>
+        <div>
           <h3>Users</h3>
-          {stats.lifetimeUsers}
-        </div> */}
+          <p>{stats.lifetimeUsers}</p>
+        </div>
         <div>
           <h3>Lifetime TVL</h3>
-          {formatMatic(stats.lifetimeDeposited)}
+          <p>{formatMatic(stats.lifetimeDeposited)}</p>
         </div>
         <div>
           <h3>Lifetime Earned</h3>
-          {formatMatic(stats.lifetimeHarvested)}
+          <p>{formatMatic(stats.lifetimeHarvested)}</p>
         </div>
-        {/* <div>
+        <div>
           <h3>Treasury Earned</h3>
-          {formatMatic(stats.lifetimeTreasury)}
-        </div> */}
+          <p>{formatMatic(stats.lifetimeTreasury)}</p>
+        </div>
       </main>
-      <div className={styles.links}>
-        <Link href="/leaderboard">
-          <a>Leaderboard</a>
-        </Link>
-      </div>
     </div>
   );
 };
