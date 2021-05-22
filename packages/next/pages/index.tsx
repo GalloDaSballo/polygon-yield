@@ -1,11 +1,11 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.scss";
 import GraphStats from "../components/GraphStats";
-import { useLogin, useUser } from "../context/UserContext";
 import HowItWorks from "../components/HowItWorks";
 import Tech from "../components/Tech";
 import vaults from "../utils/vaults";
 import Vault from "../components/Vault";
+import OldVault from "../components/OldVault";
 
 const NewHome: React.FC = () => {
   return (
@@ -27,7 +27,8 @@ const NewHome: React.FC = () => {
         <GraphStats />
       </div>
 
-      <div className={styles.main}>
+      <div className={styles.vaults}>
+        <OldVault />
         {vaults.map((vault) => (
           <Vault vault={vault} />
         ))}

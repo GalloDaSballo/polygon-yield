@@ -123,11 +123,26 @@ const useStats = () => {
   return stats;
 };
 
-const AddressPage: React.FC = () => {
+const wMATICIcon =
+  "https://assets.coingecko.com/coins/images/4713/large/Matic.png?1553498071";
+
+const StatsHeader: React.FC = () => (
+  <div className={styles.headerEntry}>
+    <a
+      href={`${EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
+      target="_blank"
+      rel="nofollow noreferrer"
+    >
+      <img src={wMATICIcon} alt="wMATIC" />
+      <h3>wMATIC</h3>
+    </a>
+  </div>
+);
+
+const AddressPage: React.FC<{ arrowDown: boolean }> = ({ arrowDown }) => {
   const stats = useStats();
   const rate = usePriceOracle();
   const rewards = useRewards();
-  const [advanced, setAdvanced] = useState(false); // Extra data
 
   const reserve = useReserve(
     "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf12700xd05e3e715d945b59290df0ae8ef85c1bdb684744"
@@ -193,91 +208,64 @@ const AddressPage: React.FC = () => {
   if (!stats) {
     return (
       <div className={styles.container}>
-        <h2>
-          <a
-            href={`${EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
-            target="_blank"
-            rel="nofollow noreferrer"
-          >
-            WMATIC VAULT V1 📝
-          </a>
-        </h2>
-        <p>Loading</p>
+        <StatsHeader />
       </div>
     );
   }
 
   return (
     <div className={styles.container}>
-      <h2>
-        <a
-          href={`${EXPLORER_URL}/address/${CONTRACT_ADDRESS}`}
-          target="_blank"
-          rel="nofollow noreferrer"
-        >
-          WMATIC VAULT V1 📝
-        </a>
-      </h2>
-      <h2 onClick={() => setAdvanced(!advanced)}>STATS 🤓</h2>
-      <span>All stats are expressed in MATIC unless otherwise noted</span>
-      <pre>
-        TVL:{" "}
-        {formatStringAmount(
-          utils.formatEther(
-            stats.totalCollateralETH
-              .mul("1000000000000000000")
-              .div(rate)
-              .sub(stats.totalDebtETH.mul("1000000000000000000").div(rate))
-              .add(rewards)
-          )
-        )}
-      </pre>
-      <pre>
-        Total Deposited:{" "}
-        {formatStringAmount(
-          utils.formatEther(
-            stats.totalCollateralETH.mul("1000000000000000000").div(rate)
-          )
-        )}
-      </pre>
-      <pre>
-        Total Borrowed:{" "}
-        {formatStringAmount(
-          utils.formatEther(
-            stats.totalDebtETH.mul("1000000000000000000").div(rate)
-          )
-        )}
-        <pre>Unclaimed Rewards {utils.formatEther(rewards)}</pre>
-      </pre>
-
-      {advanced && (
-        <div>
-          <pre>Deposit Rate: {depositApr}%</pre>
-          <pre>Borrow Rate: {borrowApr}%</pre>
-
-          <pre>Deposit Rewards APR: {depositRewardsApr}</pre>
-          <pre>Borrow Rewards APR: {borrowRewardsApr}</pre>
-        </div>
-      )}
-
-      <pre>
-        Pool APR: {poolApr === "Loading" ? "Loading" : formatPercent(poolApr)}
-      </pre>
-      {advanced && (
-        <div>
-          <h2>RISK</h2>
-          <pre>healthFactor: {utils.formatEther(stats.healthFactor)}</pre>
-          <pre>
-            Contract Can Borrow Another:{" "}
-            {utils.formatEther(
-              stats.availableBorrowsETH
+      <StatsHeader />
+      <div>
+        <p>
+          {formatStringAmount(
+            utils.formatEther(
+              stats.totalCollateralETH
                 .mul("1000000000000000000")
-                .div(parseFloat(rate))
-            )}
-          </pre>
-          {advanced && <pre>ltv: {aaveRes?.[0]?.baseLTVasCollateral}</pre>}
+                .div(rate)
+                .sub(stats.totalDebtETH.mul("1000000000000000000").div(rate))
+            )
+          )}
+        </p>
+        <h3>TVL</h3>
+      </div>
+      <div>
+        <p>
+          {formatStringAmount(
+            utils.formatEther(
+              stats.totalCollateralETH.mul("1000000000000000000").div(rate)
+            )
+          )}
+        </p>
+        <h3>Total Deposited</h3>
+      </div>
+      <div>
+        <p>
+          {formatStringAmount(
+            utils.formatEther(
+              stats.totalDebtETH.mul("1000000000000000000").div(rate)
+            )
+          )}
+        </p>
+        <h3>Total Borrowed</h3>
+      </div>
+      <div>
+        <p>{utils.formatEther(rewards)} (wMATIC)</p>
+        <h3>Unclaimed Rewards</h3>
+      </div>
+      <div>
+        <p>{poolApr === "Loading" ? "Loading" : formatPercent(poolApr)}</p>
+        <h3>Pool APR</h3>
+      </div>
+      <div className={styles.arrowContainer}>
+        <div className={styles.arrowButton}>
+          <img
+            alt="Click to toggle"
+            className={arrowDown ? styles.arrowDown : undefined}
+            src="/images/arrow-up.svg"
+          />
         </div>
-      )}
+      </div>
     </div>
   );
 };

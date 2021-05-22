@@ -137,26 +137,11 @@ const useStats = (vault: Vault) => {
   return stats;
 };
 
-const StatsHeader: React.FC<{ vault: Vault }> = ({ vault }) => (
-  <div className={styles.headerEntry}>
-    <a
-      href={`${EXPLORER_URL}/address/${vault.address}`}
-      target="_blank"
-      rel="nofollow noreferrer"
-    >
-      <img src={vault.logoURI} alt={vault.name} />
-      <h3>{vault.name}</h3>
-    </a>
-  </div>
-);
-
-const Stats: React.FC<{ vault: Vault; arrowDown: boolean }> = ({
-  vault,
-  arrowDown,
-}) => {
+const Stats: React.FC<{ vault: Vault }> = ({ vault }) => {
   const stats = useStats(vault);
   const rate = usePriceOracle(vault.want.address);
   const rewards = useRewards(vault.rewardsStrat);
+  const [advanced, setAdvanced] = useState(false); // Extra data
 
   const wantReserve = useReserve(WANT_TO_RESERVE[vault.want.address]);
   const rewardsReserve = useReserve(WANT_TO_RESERVE.rewards);
@@ -197,6 +182,8 @@ const Stats: React.FC<{ vault: Vault; arrowDown: boolean }> = ({
   const depositApr = stats ? utils.formatUnits(stats.depositRate, 27) : "0";
   const borrowApr = stats ? utils.formatUnits(stats.borrowRate, 27) : "0";
 
+  console.log("formattedWantReserves", formattedWantReserves);
+
   const poolApr = useMemo(() => {
     if (!stats || !wantReserve) {
       return "Loading";
@@ -228,64 +215,101 @@ const Stats: React.FC<{ vault: Vault; arrowDown: boolean }> = ({
   if (!stats) {
     return (
       <div className={styles.container}>
-        <StatsHeader vault={vault} />
+        <h2>
+          <a
+            href={`${EXPLORER_URL}/address/${vault.address}`}
+            target="_blank"
+            rel="nofollow noreferrer"
+          >
+            {vault.name} 📝
+          </a>
+        </h2>
+        <p>Loading</p>
       </div>
     );
   }
+  console.log(
+    "stats.availableBorrowsETH",
+    vault.name,
+    stats.availableBorrowsETH.toString()
+  );
+
+  console.log("rate", vault.name, rate);
 
   return (
     <div className={styles.container}>
-      <StatsHeader vault={vault} />
-      <div>
-        <p>
-          {formatStringAmount(
-            utils.formatEther(
-              stats.totalCollateralETH
-                .mul("1000000000000000000")
-                .div(rate)
-                .sub(stats.totalDebtETH.mul("1000000000000000000").div(rate))
-            )
-          )}
-        </p>
-        <h3>TVL</h3>
-      </div>
-      <div>
-        <p>
-          {formatStringAmount(
-            utils.formatEther(
-              stats.totalCollateralETH.mul("1000000000000000000").div(rate)
-            )
-          )}
-        </p>
-        <h3>Total Deposited</h3>
-      </div>
-      <div>
-        <p>
-          {formatStringAmount(
-            utils.formatEther(
-              stats.totalDebtETH.mul("1000000000000000000").div(rate)
-            )
-          )}
-        </p>
-        <h3>Total Borrowed</h3>
-      </div>
-      <div>
-        <p>{utils.formatEther(rewards)} (wMATIC)</p>
-        <h3>Unclaimed Rewards</h3>
-      </div>
-      <div>
-        <p>{poolApr === "Loading" ? "Loading" : formatPercent(poolApr)}</p>
-        <h3>Pool APR</h3>
-      </div>
-      <div className={styles.arrowContainer}>
-        <div className={styles.arrowButton}>
-          <img
-            alt="Click to toggle"
-            className={arrowDown ? styles.arrowDown : undefined}
-            src="/images/arrow-up.svg"
-          />
+      <h2>
+        <a
+          href={`${EXPLORER_URL}/address/${vault.address}`}
+          target="_blank"
+          rel="nofollow noreferrer"
+        >
+          {vault.name} 📝
+        </a>
+      </h2>
+      <h2 onClick={() => setAdvanced(!advanced)}>STATS 🤓</h2>
+      <span>
+        All stats are expressed in {vault.want.symbol} unless otherwise noted
+      </span>
+      <pre>
+        TVL:{" "}
+        {formatStringAmount(
+          utils.formatEther(
+            stats.totalCollateralETH
+              .mul("1000000000000000000")
+              .div(rate)
+              .sub(stats.totalDebtETH.mul("1000000000000000000").div(rate))
+          )
+        )}
+      </pre>
+      <pre>
+        Total Deposited:{" "}
+        {formatStringAmount(
+          utils.formatEther(
+            stats.totalCollateralETH.mul("1000000000000000000").div(rate)
+          )
+        )}
+      </pre>
+      <pre>
+        Total Borrowed:{" "}
+        {formatStringAmount(
+          utils.formatEther(
+            stats.totalDebtETH.mul("1000000000000000000").div(rate)
+          )
+        )}
+        <pre>Unclaimed Rewards {utils.formatEther(rewards)} (wMATIC)</pre>
+      </pre>
+
+      {advanced && (
+        <div>
+          <pre>Deposit Rate: {depositApr}%</pre>
+          <pre>Borrow Rate: {borrowApr}%</pre>
+
+          <pre>Deposit Rewards APR: {depositRewardsApr}</pre>
+          <pre>Borrow Rewards APR: {borrowRewardsApr}</pre>
         </div>
-      </div>
+      )}
+
+      <pre>
+        Pool APR: {poolApr === "Loading" ? "Loading" : formatPercent(poolApr)}
+      </pre>
+      {advanced && (
+        <div>
+          <h2>RISK</h2>
+          <pre>healthFactor: {utils.formatEther(stats.healthFactor)}</pre>
+          <pre>
+            Contract Can Borrow Another:{" "}
+            {utils.formatEther(
+              stats.availableBorrowsETH
+                .mul("1000000000000000000")
+                .div(BigNumber.from(rate))
+            )}
+          </pre>
+          {advanced && (
+            <pre>ltv: {formattedWantReserves?.[0]?.baseLTVasCollateral}</pre>
+          )}
+        </div>
+      )}
     </div>
   );
 };

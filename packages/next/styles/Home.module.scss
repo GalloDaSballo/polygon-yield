@@ -9,10 +9,11 @@
     border-radius: 12px;
   }
 }
-.main {
+.vaults {
   display: flex;
   margin: auto;
   justify-content: center;
+  flex-direction: column;
 
   > div {
     flex: 1;
