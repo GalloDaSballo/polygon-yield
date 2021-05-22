@@ -9,14 +9,14 @@
     position: absolute;
     top: 0;
     left: 0;
-    max-width: 742px;
+    max-width: min(100vw, 742px);
   }
 
   .bottomRight {
     position: absolute;
     bottom: 0;
     right: 0;
-    max-width: 574px;
+    max-width: min(100vw, 574px);
   }
 
   .masthead, .vaults {
