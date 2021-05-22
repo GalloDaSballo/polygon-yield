@@ -259,7 +259,6 @@ const Stats: React.FC<{ vault: Vault }> = ({ vault }) => {
               .mul("1000000000000000000")
               .div(rate)
               .sub(stats.totalDebtETH.mul("1000000000000000000").div(rate))
-              .add(rewards)
           )
         )}
       </pre>
@@ -278,7 +277,7 @@ const Stats: React.FC<{ vault: Vault }> = ({ vault }) => {
             stats.totalDebtETH.mul("1000000000000000000").div(rate)
           )
         )}
-        <pre>Unclaimed Rewards {utils.formatEther(rewards)}</pre>
+        <pre>Unclaimed Rewards {utils.formatEther(rewards)} (wMATIC)</pre>
       </pre>
 
       {advanced && (
