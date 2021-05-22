@@ -61,7 +61,7 @@ const Home: React.FC = () => {
 
       <div className={styles.main}>
         <div className={styles.stats}>
-          <Stats />
+          <Stats arrowDown />
         </div>
 
         {!user && (
