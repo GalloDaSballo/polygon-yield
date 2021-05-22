@@ -49,7 +49,7 @@ contract AAVEUSDCRewards is IStrategy, Ownable, ReentrancyGuard {
 
 
   // Strategy settings
-  uint256 public minRebalanceAmount = 500000000000000000; // 0.5
+  uint256 public minRebalanceAmount = 500000000000000000; // 0.5 should be changed based on decimals
   address public strategist;
 
   uint256 public feedDecimals = 18; // Some chainlink feeds have less decimals

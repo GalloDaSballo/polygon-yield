@@ -35,3 +35,4 @@ import "./transferToWallet";
 import "./removeStratsAt";
 import "./setMinHealthAt";
 import "./setStrategistAt";
+import "./setRebalanceAmountAt";
