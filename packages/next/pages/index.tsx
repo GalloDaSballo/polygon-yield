@@ -17,11 +17,17 @@ const NewHome: React.FC = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className={styles.blue}>
+        <img className={styles.topLeft} alt="bg" src="/images/top-left.png" />
+        <img
+          className={styles.bottomRight}
+          alt="bg"
+          src="/images/bottom-right.png"
+        />
         <div className={styles.masthead}>
-          <h1>Earn more Matic, with your Matic</h1>
+          <h1>Earn more Rewards, with your Tokens</h1>
           <p>⚠️Code unadited⚠️</p>
           <p>
-            Myield manages your Matic on AAVE to earn the highest amount of
+            Myield manages your Tokens on AAVE to earn the highest amount of
             Polygon rewards
           </p>
         </div>

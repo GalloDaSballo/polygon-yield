@@ -8,9 +8,11 @@ import styles from "../Vault/Vault.module.scss";
 import DepositOld from "../Deposit/old";
 import WithdrawOld from "../Withdraw/old";
 import StatsOld from "../Stats/old";
+import { useUser } from "../../context/UserContext";
 
 const OldVault: React.FC = () => {
   const [showDeposit, setShowDeposit] = useState(false);
+  const user = useUser();
 
   return (
     <div className={styles.vault}>
@@ -21,7 +23,7 @@ const OldVault: React.FC = () => {
         >
           <StatsOld arrowDown={!showDeposit} />
         </div>
-        {showDeposit && (
+        {showDeposit && user && (
           <div className={styles.actions}>
             <div>
               <DepositOld />

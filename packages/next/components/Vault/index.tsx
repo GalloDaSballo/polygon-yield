@@ -4,9 +4,11 @@ import Stats from "../Stats";
 import Deposit from "../Deposit";
 import Withdraw from "../Withdraw";
 import { Vault } from "../../types";
+import { useUser } from "../../context/UserContext";
 
 const VaultComponent: React.FC<{ vault: Vault }> = ({ vault }) => {
   const [showDeposit, setShowDeposit] = useState(false);
+  const user = useUser();
   return (
     <div className={styles.vault}>
       <div className={styles.body}>
@@ -16,7 +18,7 @@ const VaultComponent: React.FC<{ vault: Vault }> = ({ vault }) => {
         >
           <Stats vault={vault} arrowDown={!showDeposit} />
         </div>
-        {showDeposit && (
+        {showDeposit && user && (
           <div className={styles.actions}>
             <div>
               <Deposit vault={vault} />

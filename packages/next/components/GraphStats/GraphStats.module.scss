@@ -5,10 +5,14 @@
     > div {
       flex: 1;
       color: #fff;
-      border-radius: 15px;
+      border-left: 1px solid #fff;
       padding: 24px 12px;
       margin-right: 25px;
       text-align: center;
+      
+      &:first-of-type {
+        border-left: none;
+      }
 
       &:last-of-type {
         margin-right: 0;
