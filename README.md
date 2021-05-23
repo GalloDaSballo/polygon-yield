@@ -1,5 +1,8 @@
 # Myield Monorepo
 
+## Video Intro
+https://www.youtube.com/watch?v=F0LiP1I8Pxk&ab_channel=AlextheEntreprenerd
+
 ## Contracts and Documentation
 https://www.notion.so/Myield-Earn-Matic-with-your-Matic-257288aff5b74be9b37728c6b7d28a28
 
