@@ -141,7 +141,7 @@ const useStats = (vault: Vault) => {
   return stats;
 };
 
-const StatsHeader: React.FC<{ vault: Vault; dca: boolean }> = ({
+const StatsHeader: React.FC<{ vault: Vault; dca?: boolean }> = ({
   vault,
   dca = false,
 }) => (
@@ -155,7 +155,7 @@ const StatsHeader: React.FC<{ vault: Vault; dca: boolean }> = ({
       {dca && (
         <>
           {" "}
-          -> <img src={vault.need.logoURI} alt={vault.need.name} />
+          {"->"} <img src={vault.need.logoURI} alt={vault.need.name} />
         </>
       )}
       <h3>{vault.name}</h3>
@@ -163,7 +163,7 @@ const StatsHeader: React.FC<{ vault: Vault; dca: boolean }> = ({
   </div>
 );
 
-const Stats: React.FC<{ vault: Vault; arrowDown: boolean; dca: boolean }> = ({
+const Stats: React.FC<{ vault: Vault; arrowDown: boolean; dca?: boolean }> = ({
   vault,
   arrowDown,
   dca = false,
