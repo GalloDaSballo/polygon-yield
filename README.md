@@ -3,11 +3,28 @@
 ## Contracts and Documentation
 https://www.notion.so/Myield-Earn-Matic-with-your-Matic-257288aff5b74be9b37728c6b7d28a28
 
-## Vaults Addresses and Hardhat Tasks
-https://www.notion.so/Vaults-V2-99627601139d4a97aefc29986cb48ced
+## Vaults Addresses
 
-## USDC to wBTC DCA Vault
-https://www.notion.so/DCA-Vaults-V1-EXPERIMENTAL-1fe884169f554f9f9a29d3642c0dff96
+Myield wMatic Vault:
+0x9dB2A331fbD4cEA56450f3A0a9b983bC52ec7387
+
+Myield USDC Vault:
+0x792233693f028d8f569AB2cB5bCCF67245702dc8
+
+AAVE USDC Strat:
+0xe1aB1eE2c63347951d72BD3ee9597088084Ed221
+
+Myield wBTC Vault:
+0x404ABc76561De735b3206DD7A6b8FaD83155f673
+
+AAVE wBTC Strat:
+0x7709BA99cF5A2544aebf2bB149a420C6D8C3D227
+
+USDC to wBTC DCA Vault
+0xD0E05D1C314Cbd51e0e76A71Dc7A0CcdDAcbCCe1
+
+USDC Strat
+0xEed13F8A0Ad6A8cac6d54D1C89c180eBe4E95153
 
 
 Monorepo setup using:
