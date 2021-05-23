@@ -36,6 +36,11 @@ USDC Strat
 - theGraph
 
 
+## Additional Code: Bot Repository
+https://github.com/GalloDaSballo/myield-bot
+
+The bot rebalances, and harvest, ensuring highest yield
+
 ## hardhat
 The contracts, with tests and tasks to publish new content, using Solidity Template
 
