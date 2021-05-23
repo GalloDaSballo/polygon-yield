@@ -66,6 +66,16 @@ export type AccountData = {
   earned: string;
 };
 
+export type VaultAccountData = {
+  id: string;
+  account: {
+    id: string
+  };
+  deposited: string;
+  shares: string;
+  earned: string;
+};
+
 export interface Token {
   name: string;
   symbol: string;

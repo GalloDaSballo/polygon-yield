@@ -7,6 +7,7 @@ import DCAVault from "../components/DCAVault";
 import Leaderboard from "../components/Leaderboard";
 import Features from "../components/Features";
 import dcaVaults from "../utils/dcaVaults";
+import VaultLeaderboard from "../components/VaultLeaderboard";
 
 const NewHome: React.FC = () => {
   return (
@@ -47,7 +48,10 @@ const NewHome: React.FC = () => {
       </div>
       <div className={styles.content}>
         <div>
-          <Leaderboard />
+        {dcaVaults.map((vault) => (
+            <VaultLeaderboard vault={vault} />
+          ))}
+          
         </div>
         <HowItWorks />
         <div>

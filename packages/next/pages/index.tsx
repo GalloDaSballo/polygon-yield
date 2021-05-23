@@ -6,8 +6,9 @@ import Tech from "../components/Tech";
 import vaults from "../utils/vaults";
 import Vault from "../components/Vault";
 import OldVault from "../components/OldVault";
-import Leaderboard from "../components/Leaderboard";
+import VaultLeaderboard from "../components/VaultLeaderboard";
 import Features from "../components/Features";
+import Leaderboard from "../components/Leaderboard";
 
 const NewHome: React.FC = () => {
   return (
@@ -45,6 +46,11 @@ const NewHome: React.FC = () => {
       <div className={styles.content}>
         <div>
           <Leaderboard />
+        </div>
+        <div>
+            {vaults.map((vault) => (
+              <VaultLeaderboard vault={vault} />
+            ))}
         </div>
         <HowItWorks />
         <div>

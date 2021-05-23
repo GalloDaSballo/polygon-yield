@@ -97,3 +97,19 @@ export const GET_LEADERBOARD = gql`
     }
   }
 `;
+
+export const GET_VAULT_LEADERBOARD = gql`
+  query getLeaderboard($orderBy: String!, $orderDirection: String!, $vaultID: String!) {
+    vault(id: $vaultID, orderBy: $orderBy, orderDirection: $orderDirection) {
+      id
+      positions(orderBy: $orderBy, orderDirection: $orderDirection) {
+        account{
+          id
+        }
+        deposited
+        earned
+        shares
+      }
+    }
+  }
+`;
