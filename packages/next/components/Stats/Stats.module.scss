@@ -1,11 +1,53 @@
 .container {
-  padding: 38px 50px;
-  background: #F1F3FF 0% 0% no-repeat padding-box;
-  border-radius: 24px;
+  display: flex;
+  padding: 16px 18px 13px;
 
   @media screen and (max-width: 1024px) {
-    padding: 12px;
-    overflow: scroll;
-    max-width: calc(100% - 24px);
+    flex-direction: column;
+  }
+
+  > div {
+    flex: 1;
+    align-self: center;
+    text-align: center;
+
+    p {
+      font-size: 16px;
+      font-weight: bold;
+      color: #414141;
+    }
+    h3 {
+      font-size: 13px;
+      color: #a4b2bc;
+    }
+  }
+
+  .arrowContainer { 
+
+    .arrowButton {
+      max-width: 36px;
+      max-height: 36px;
+      margin: auto;
+      box-shadow: 0 5px 13px 0 rgba(0, 0, 0, 0.1);
+      border-radius: 36px;
+      height: 36px;
+      width: 36px;
+      line-height: 33px;
+    }
+    img {
+      align-items: center;
+      max-width: 11.22px;
+
+      &.arrowDown {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+
+  .headerEntry {
+    img {
+      max-width: 52.5px;
+    }
   }
 }

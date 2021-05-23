@@ -10,14 +10,6 @@ const HowItWorks: React.FC = () => {
         rewards
       </p>
       <p>This is very time consuming</p>
-      <p>
-        Myield automates that, simply deposit and the smart contract will manage
-        your MATIC for you!
-      </p>
-      <p>
-        Myield takes a 5% performance fee on Harvest, this is applied
-        exclusively to the rewards earned, your principal is never touched
-      </p>
     </div>
   );
 };

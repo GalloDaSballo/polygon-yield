@@ -17,7 +17,9 @@ const Header: React.FC = () => {
   return (
     <header className={styles.header}>
       <Link href="/">
-        <a>MyYield</a>
+        <a>
+          <img className={styles.logo} src="/images/logo.png" alt="Myield" />
+        </a>
       </Link>
       {error && <span>{handleConnetionError(error)}</span>}
       {user && (
@@ -26,18 +28,10 @@ const Header: React.FC = () => {
             <span className={styles.accountName}>
               Connected as: {String(user?.address).substring(0, 6)}...
             </span>
-            <Link href={`/stats/${user?.address}`}>
+            {/* <Link href={`/stats/${user?.address}`}>
               <a>View your Stats</a>
-            </Link>
-            <span className={styles.userDetails}>
-              <span>Matic: {formatStringAmount(utils.formatEther(matic))}</span>
-              <span>
-                Wmatic: {formatStringAmount(utils.formatEther(wMatic))}
-              </span>
-              <span>
-                Shares: {formatStringAmount(utils.formatEther(shares))}
-              </span>
-            </span>
+            </Link> */}
+            <span className={styles.userDetails} />
           </div>
         </div>
       )}

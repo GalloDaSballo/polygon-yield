@@ -1,18 +1,53 @@
 .container {
-  padding: 24px 42px;
-  
+  .blue {
+    background-image: linear-gradient(117deg, #2e48cd 6%, #1f237e 96%);
+    padding: 24px 42px;
+    position: relative;
+  }
+
+  .topLeft {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: min(100vw, 742px);
+  }
+
+  .bottomRight {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    max-width: min(100vw, 574px);
+  }
+
+  .masthead, .vaults {
+    position: relative; /* For bg images */
+  }
+
+  .content {
+    padding: 24px 42px;
+  }
   .masthead {
     text-align: center;
-    background-color: #2b6def;
     color: #fff;
     padding: 48px 59px;
     border-radius: 12px;
+    h1 {
+      font-size: 51px;
+      line-height: 62px;
+    }
+
+    p {
+      font-weight: 400;
+      font-size: 17px;
+      line-height: 27px;
+    }
   }
 }
-.main {
+.vaults {
   display: flex;
   margin: auto;
   justify-content: center;
+  flex-direction: column;
 
   > div {
     flex: 1;
@@ -54,14 +89,22 @@
 @media screen and (max-width: 1024px) {
 
   .container {
-    padding: 12px 15px;
-    main {
-      flex-direction: column;
-      > div {
-        margin-right: 0!important;
+    padding: 0;
+    .blue, .content {
+      padding: 27px;
+    }
+
+    .masthead {
+      padding: 50px 32px;
+      border-radius: 12px;
+      h1 {
+        font-size: 31px;
+        line-height: 37px;
       }
     }
   }
+
+
 
   .main {
     flex-direction: column-reverse;

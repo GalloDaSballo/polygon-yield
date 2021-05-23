@@ -1,0 +1,11 @@
+.container {
+  padding: 38px 50px;
+  background: #F1F3FF 0% 0% no-repeat padding-box;
+  border-radius: 24px;
+
+  @media screen and (max-width: 1024px) {
+    padding: 12px;
+    overflow: scroll;
+    max-width: calc(100% - 24px);
+  }
+}

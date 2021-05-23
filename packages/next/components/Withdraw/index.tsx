@@ -2,30 +2,33 @@ import { utils, Contract, BigNumber } from "ethers";
 import { FormEvent, useMemo, useState } from "react";
 import { useBalances } from "../../context/BalanceContext";
 import { useUser } from "../../context/UserContext";
-import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../../utils/constants";
+import { VAULT_ABI } from "../../utils/vaults";
 import { formatMatic } from "../../utils/format";
 import styles from "../../styles/widget.module.scss";
+import { Vault } from "../../types";
+import useERC20Balance from "../../hooks/useERC20Balance";
 
-const Withdraw: React.FC = () => {
+const Withdraw: React.FC<{ vault: Vault }> = ({ vault }) => {
   const user = useUser();
-  const { shares: sharesBalance } = useBalances();
+  const vaultBalance = useERC20Balance(user, vault.address);
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const BNAmount = useMemo(
-    () => (amount ? utils.parseUnits(amount, "ether") : BigNumber.from("0")),
-    [amount]
+    () =>
+      amount ? utils.parseUnits(amount, vault.decimals) : BigNumber.from("0"),
+    [amount, vault]
   );
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const vault = new Contract(
-      CONTRACT_ADDRESS,
-      CONTRACT_ABI,
+    const vaultContract = new Contract(
+      vault.address,
+      VAULT_ABI,
       user.provider.getSigner()
     );
 
-    const withdrawRequest = await vault.withdraw(BNAmount, {
+    const withdrawRequest = await vaultContract.withdraw(BNAmount, {
       gasLimit: 5000000,
     });
     setLoading(true);
@@ -44,9 +47,11 @@ const Withdraw: React.FC = () => {
         Withdraw{" "}
         <button
           type="button"
-          onClick={() => setAmount(utils.formatEther(sharesBalance))}
+          onClick={() =>
+            setAmount(utils.formatUnits(vaultBalance, vault.decimals))
+          }
         >
-          Shares Balance: {formatMatic(sharesBalance)}
+          Shares Balance: {utils.formatUnits(vaultBalance, vault.decimals)}
         </button>
       </h3>
       {loading && <p>LOADING</p>}
@@ -55,7 +60,9 @@ const Withdraw: React.FC = () => {
           type="number"
           step="0.000000000000000001"
           min="0"
-          max={sharesBalance ? utils.formatEther(sharesBalance) : "0"}
+          max={
+            vaultBalance ? utils.formatUnits(vaultBalance, vault.decimals) : "0"
+          }
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />

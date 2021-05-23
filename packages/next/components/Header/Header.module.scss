@@ -3,7 +3,14 @@
   display: flex;
   justify-content: space-between;
   white-space: nowrap;
-
+  background: none;
+  position: absolute;
+  width: 100%;
+  color: #fff;
+  z-index: 1;
+  .logo {
+    max-width: 117px;
+  }
   span a {
     text-decoration: underline;
   }

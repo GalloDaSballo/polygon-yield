@@ -65,3 +65,20 @@ export type AccountData = {
   shares: string;
   earned: string;
 };
+
+export interface Token {
+  name: string;
+  symbol: string;
+  address: string;
+  logoURI: string;
+  decimals: number;
+}
+
+export interface VaultToken extends Token {
+  rewardsStrat: string;
+}
+
+export interface Vault extends VaultToken {
+  want: Token;
+  need?: Token;
+}
