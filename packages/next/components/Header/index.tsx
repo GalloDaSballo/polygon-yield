@@ -24,7 +24,7 @@ const Header: React.FC = () => {
       {error && <span>{handleConnetionError(error)}</span>}
       <div>
         <Link href="/wbtc">
-          <a>Earn wBTC</a>
+          <a className={styles.link}>Earn wBTC</a>
         </Link>
         {user && (
           <span className={styles.commands}>
