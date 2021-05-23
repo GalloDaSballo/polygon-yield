@@ -255,7 +255,7 @@ const AddressPage: React.FC<{ arrowDown: boolean }> = ({ arrowDown }) => {
       </div>
       <div>
         <p>{poolApr === "Loading" ? "Loading" : formatPercent(poolApr)}</p>
-        <h3>Pool APR</h3>
+        <h3>Pool APY</h3>
       </div>
       <div className={styles.arrowContainer}>
         <div className={styles.arrowButton}>

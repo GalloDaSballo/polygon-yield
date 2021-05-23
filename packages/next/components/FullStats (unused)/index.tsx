@@ -291,7 +291,7 @@ const Stats: React.FC<{ vault: Vault }> = ({ vault }) => {
       )}
 
       <pre>
-        Pool APR: {poolApr === "Loading" ? "Loading" : formatPercent(poolApr)}
+        Pool APY: {poolApr === "Loading" ? "Loading" : formatPercent(poolApr)}
       </pre>
       {advanced && (
         <div>

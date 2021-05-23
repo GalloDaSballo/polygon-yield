@@ -289,7 +289,7 @@ const Stats: React.FC<{ vault: Vault; arrowDown: boolean; dca?: boolean }> = ({
       </div>
       <div>
         <p>{poolApr === "Loading" ? "Loading" : formatPercent(poolApr)}</p>
-        <h3>Pool APR</h3>
+        <h3>Pool APY</h3>
       </div>
       <div className={styles.arrowContainer}>
         <div className={styles.arrowButton}>
