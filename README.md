@@ -27,7 +27,7 @@ USDC Strat
 0xEed13F8A0Ad6A8cac6d54D1C89c180eBe4E95153
 
 
-Monorepo setup using:
+# Monorepo setup using:
 - Solidity Template by @TomAFrench and @paulrberg
 - NextJS with Typescript and EsLint
 - theGraph
