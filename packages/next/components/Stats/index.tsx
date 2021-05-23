@@ -137,7 +137,10 @@ const useStats = (vault: Vault) => {
   return stats;
 };
 
-const StatsHeader: React.FC<{ vault: Vault }> = ({ vault }) => (
+const StatsHeader: React.FC<{ vault: Vault; dca: boolean }> = ({
+  vault,
+  dca = false,
+}) => (
   <div className={styles.headerEntry}>
     <a
       href={`${EXPLORER_URL}/address/${vault.address}`}
@@ -145,14 +148,21 @@ const StatsHeader: React.FC<{ vault: Vault }> = ({ vault }) => (
       rel="nofollow noreferrer"
     >
       <img src={vault.logoURI} alt={vault.name} />
+      {dca && (
+        <>
+          {" "}
+          -> <img src={vault.need.logoURI} alt={vault.need.name} />
+        </>
+      )}
       <h3>{vault.name}</h3>
     </a>
   </div>
 );
 
-const Stats: React.FC<{ vault: Vault; arrowDown: boolean }> = ({
+const Stats: React.FC<{ vault: Vault; arrowDown: boolean; dca: boolean }> = ({
   vault,
   arrowDown,
+  dca = false,
 }) => {
   const stats = useStats(vault);
   const rate = usePriceOracle(vault.want.address);
@@ -228,14 +238,14 @@ const Stats: React.FC<{ vault: Vault; arrowDown: boolean }> = ({
   if (!stats) {
     return (
       <div className={styles.container}>
-        <StatsHeader vault={vault} />
+        <StatsHeader dca={dca} vault={vault} />
       </div>
     );
   }
 
   return (
     <div className={styles.container}>
-      <StatsHeader vault={vault} />
+      <StatsHeader dca={dca} vault={vault} />
       <div>
         <p>
           {formatStringAmount(
