@@ -33,6 +33,7 @@ const NewHome: React.FC = () => {
             These are special, Dollar Cost Averaging Vaults, which will earn
             wBTC with a deposit of USDC
           </p>
+          <p>wBTC is sent directly to your address every few minutes</p>
         </div>
         <div>
           <GraphStats />
