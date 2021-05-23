@@ -82,3 +82,7 @@ export interface Vault extends VaultToken {
   want: Token;
   need?: Token;
 }
+
+export interface DCAVault extends Vault {
+  need: Token;
+}

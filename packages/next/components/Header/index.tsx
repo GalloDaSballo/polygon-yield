@@ -22,9 +22,12 @@ const Header: React.FC = () => {
         </a>
       </Link>
       {error && <span>{handleConnetionError(error)}</span>}
-      {user && (
-        <div>
-          <div className={styles.commands}>
+      <div>
+        <Link href="/wbtc">
+          <a className={styles.link}>Earn wBTC</a>
+        </Link>
+        {user && (
+          <span className={styles.commands}>
             <span className={styles.accountName}>
               Connected as: {String(user?.address).substring(0, 6)}...
             </span>
@@ -32,14 +35,18 @@ const Header: React.FC = () => {
               <a>View your Stats</a>
             </Link> */}
             <span className={styles.userDetails} />
-          </div>
-        </div>
-      )}
-      {!user && (
-        <button type="button" onClick={() => login()} className={styles.button}>
-          Login with Metamask
-        </button>
-      )}
+          </span>
+        )}
+        {!user && (
+          <button
+            type="button"
+            onClick={() => login()}
+            className={styles.button}
+          >
+            Login with Metamask
+          </button>
+        )}
+      </div>
     </header>
   );
 };

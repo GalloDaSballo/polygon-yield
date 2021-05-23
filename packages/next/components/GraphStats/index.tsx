@@ -12,10 +12,10 @@ const GraphStats: React.FC = () => {
   return (
     <div className={styles.container}>
       <main>
-        <div>
+        {/* <div>
           <h3>Users</h3>
           <p>{stats.lifetimeUsers}</p>
-        </div>
+        </div> */}
         <div>
           <h3>Lifetime TVL</h3>
           <p>{formatMatic(stats.lifetimeDeposited)}</p>
@@ -24,10 +24,10 @@ const GraphStats: React.FC = () => {
           <h3>Lifetime Earned</h3>
           <p>{formatMatic(stats.lifetimeHarvested)}</p>
         </div>
-        <div>
+        {/* <div>
           <h3>Treasury Earned</h3>
           <p>{formatMatic(stats.lifetimeTreasury)}</p>
-        </div>
+        </div> */}
       </main>
     </div>
   );

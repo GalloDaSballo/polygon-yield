@@ -14,9 +14,11 @@
   span a {
     text-decoration: underline;
   }
-
+  .link{
+    margin-right: 25px;
+  }
   .commands {
-    display: flex;
+
     .accountName {
       margin-right: 25px;
     }
