@@ -1,14 +1,9 @@
+""" These will require finding a way to convert to usd """
 type Account @entity {
   id: ID!
   deposited: BigInt!
   earned: BigInt!
   shares: BigInt!
-}
-
-type Vault @entity {
-  id: ID!
-  treasury: BigInt!
-  totalHarvested: BigInt!
 }
 
 type Protocol @entity {
@@ -17,4 +12,28 @@ type Protocol @entity {
   lifetimeDeposited: BigInt! ## Sum of all deposits ever
   lifetimeHarvested: BigInt! ## Sum of all harvested funds
   lifetimeTreasury: BigInt! ## Sum of all funds earned and sent to treasury
+}
+
+
+""" These are expressed in want, way easier to code and manage """
+type Vault @entity {
+  id: ID!
+  deposited: BigInt!
+  shares: BigInt!
+
+  lifetimeDeposited: BigInt!
+  lifetimeTreasury: BigInt!
+  lifetimeHarvested: BigInt!
+
+  positions: [VaultPosition!]! @derivedFrom(field: "vault")
+}
+
+
+type VaultPosition @entity {
+  id: ID!
+  account: Account!
+  vault: Vault!
+  deposited: BigInt!
+  earned: BigInt!
+  shares: BigInt!
 }

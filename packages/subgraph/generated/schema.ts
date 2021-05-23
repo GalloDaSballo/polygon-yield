@@ -70,55 +70,6 @@ export class Account extends Entity {
   }
 }
 
-export class Vault extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id !== null, "Cannot save Vault entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save Vault entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("Vault", id.toString(), this);
-  }
-
-  static load(id: string): Vault | null {
-    return store.get("Vault", id) as Vault | null;
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get treasury(): BigInt {
-    let value = this.get("treasury");
-    return value.toBigInt();
-  }
-
-  set treasury(value: BigInt) {
-    this.set("treasury", Value.fromBigInt(value));
-  }
-
-  get totalHarvested(): BigInt {
-    let value = this.get("totalHarvested");
-    return value.toBigInt();
-  }
-
-  set totalHarvested(value: BigInt) {
-    this.set("totalHarvested", Value.fromBigInt(value));
-  }
-}
-
 export class Protocol extends Entity {
   constructor(id: string) {
     super();
@@ -183,5 +134,166 @@ export class Protocol extends Entity {
 
   set lifetimeTreasury(value: BigInt) {
     this.set("lifetimeTreasury", Value.fromBigInt(value));
+  }
+}
+
+export class Vault extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Vault entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Vault entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Vault", id.toString(), this);
+  }
+
+  static load(id: string): Vault | null {
+    return store.get("Vault", id) as Vault | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get deposited(): BigInt {
+    let value = this.get("deposited");
+    return value.toBigInt();
+  }
+
+  set deposited(value: BigInt) {
+    this.set("deposited", Value.fromBigInt(value));
+  }
+
+  get shares(): BigInt {
+    let value = this.get("shares");
+    return value.toBigInt();
+  }
+
+  set shares(value: BigInt) {
+    this.set("shares", Value.fromBigInt(value));
+  }
+
+  get lifetimeDeposited(): BigInt {
+    let value = this.get("lifetimeDeposited");
+    return value.toBigInt();
+  }
+
+  set lifetimeDeposited(value: BigInt) {
+    this.set("lifetimeDeposited", Value.fromBigInt(value));
+  }
+
+  get lifetimeTreasury(): BigInt {
+    let value = this.get("lifetimeTreasury");
+    return value.toBigInt();
+  }
+
+  set lifetimeTreasury(value: BigInt) {
+    this.set("lifetimeTreasury", Value.fromBigInt(value));
+  }
+
+  get lifetimeHarvested(): BigInt {
+    let value = this.get("lifetimeHarvested");
+    return value.toBigInt();
+  }
+
+  set lifetimeHarvested(value: BigInt) {
+    this.set("lifetimeHarvested", Value.fromBigInt(value));
+  }
+
+  get positions(): Array<string> {
+    let value = this.get("positions");
+    return value.toStringArray();
+  }
+
+  set positions(value: Array<string>) {
+    this.set("positions", Value.fromStringArray(value));
+  }
+}
+
+export class VaultPosition extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save VaultPosition entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save VaultPosition entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("VaultPosition", id.toString(), this);
+  }
+
+  static load(id: string): VaultPosition | null {
+    return store.get("VaultPosition", id) as VaultPosition | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get account(): string {
+    let value = this.get("account");
+    return value.toString();
+  }
+
+  set account(value: string) {
+    this.set("account", Value.fromString(value));
+  }
+
+  get vault(): string {
+    let value = this.get("vault");
+    return value.toString();
+  }
+
+  set vault(value: string) {
+    this.set("vault", Value.fromString(value));
+  }
+
+  get deposited(): BigInt {
+    let value = this.get("deposited");
+    return value.toBigInt();
+  }
+
+  set deposited(value: BigInt) {
+    this.set("deposited", Value.fromBigInt(value));
+  }
+
+  get earned(): BigInt {
+    let value = this.get("earned");
+    return value.toBigInt();
+  }
+
+  set earned(value: BigInt) {
+    this.set("earned", Value.fromBigInt(value));
+  }
+
+  get shares(): BigInt {
+    let value = this.get("shares");
+    return value.toBigInt();
+  }
+
+  set shares(value: BigInt) {
+    this.set("shares", Value.fromBigInt(value));
   }
 }
