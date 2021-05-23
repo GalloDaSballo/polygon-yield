@@ -76,3 +76,27 @@ dataSources:
         - event: Harvest(uint256,uint256)
           handler: handleHarvest
       file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: MyieldUSDCtowBTCVault
+    network: matic
+    source:
+      address: '0xD0E05D1C314Cbd51e0e76A71Dc7A0CcdDAcbCCe1'
+      abi: MyieldDCAVault
+      startBlock: 14726544
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Accounts
+      abis:
+        - name: MyieldDCAVault
+          file: ./abis/MyieldDCAVault.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,uint256)
+          handler: handleWithdrawal
+        - event: Harvest(uint256,uint256)
+          handler: handleHarvest
+      file: ./src/mapping.ts
