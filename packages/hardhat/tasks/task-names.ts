@@ -35,3 +35,6 @@ export const TASK_REMOVE_STRATS_AT = "removeStratsAt";
 export const TASK_SET_MIN_HEALTH_AT = "setMinHealthAt";
 export const TASK_SET_STRATEGIST_AT = "setStrategistAt";
 export const TASK_SET_REBALANCE_AMOUNT_AT = "setRebalanceAmountAt";
+export const TASK_DEPOSIT_AT = "depositAt";
+export const TASK_SET_VAULT_STRATEGIST_AT = "setVaultStrategistAt";
+export const TASK_WITHDRAW_AT = "withdrawAt";

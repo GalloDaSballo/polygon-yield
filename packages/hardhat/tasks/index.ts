@@ -36,3 +36,6 @@ import "./removeStratsAt";
 import "./setMinHealthAt";
 import "./setStrategistAt";
 import "./setRebalanceAmountAt";
+import "./depositAt";
+import "./setVaultStrategistAt";
+import "./withdrawAt";
