@@ -34,7 +34,7 @@ const WANT_TO_RESERVE = {
 };
 
 const maticProvider = new ethers.providers.JsonRpcProvider(
-  "https://rpc-mainnet.maticvigil.com/v1/c3465edfbaa8d0612c382aad7cb5f876418eb4f4",
+  "https://rpc-aave-nonarchive-mainnet.maticvigil.com/v1/e616b9ddc7598ffae92629f8145614d55094c722",
   137
 );
 
