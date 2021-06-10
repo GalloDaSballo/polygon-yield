@@ -7,7 +7,7 @@ const getAPR = async (assetAddress: string): Promise<void> => {
     "0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf",
     LendingPoolV2Artifact.abi,
     new ethers.providers.JsonRpcProvider(
-      "https://rpc-aave-nonarchive-mainnet.maticvigil.com/v1/e616b9ddc7598ffae92629f8145614d55094c722"
+      "https://rpc-mainnet.maticvigil.com/v1/c3465edfbaa8d0612c382aad7cb5f876418eb4f4"
     )
   );
 
