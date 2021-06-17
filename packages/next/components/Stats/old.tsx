@@ -17,7 +17,7 @@ const ORACLE_ABI = [
   "function getAssetPrice(address _asset) public view returns(uint256)",
 ];
 
-const EMISSIONS_PER_SECOND = "706597222222222222"; // From subgraph
+const EMISSIONS_PER_SECOND = "37187500000000000"; // From subgraph
 
 const maticProvider = new ethers.providers.JsonRpcProvider(
   "https://rpc-mainnet.maticvigil.com/v1/c3465edfbaa8d0612c382aad7cb5f876418eb4f4",

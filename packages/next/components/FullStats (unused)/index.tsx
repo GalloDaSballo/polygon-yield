@@ -14,7 +14,7 @@ const ORACLE_ABI = [
   "function getAssetPrice(address _asset) public view returns(uint256)",
 ];
 
-const EMISSIONS_PER_SECOND = "706597222222222222"; // From subgraph
+const EMISSIONS_PER_SECOND = "37187500000000000"; // From subgraph
 
 // Mapping of want address to reserve id for subgraph
 const WANT_TO_RESERVE = {
