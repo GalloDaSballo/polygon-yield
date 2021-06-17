@@ -26,7 +26,7 @@ const OldVault: React.FC = () => {
         {showDeposit && user && (
           <div className={styles.actions}>
             <div>
-              <DepositOld />
+
             </div>
             <div>
               <WithdrawOld />

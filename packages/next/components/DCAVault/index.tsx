@@ -21,7 +21,7 @@ const DCAVault: React.FC<{ vault: Vault }> = ({ vault }) => {
         {showDeposit && user && (
           <div className={styles.actions}>
             <div>
-              <Deposit vault={vault} />
+
             </div>
             <div>
               <Withdraw vault={vault} />
