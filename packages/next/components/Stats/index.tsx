@@ -72,7 +72,7 @@ const useRewards = (address: string): BigNumber => {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchRewards();
-    }, 5000);
+    }, 60000);
     return () => clearInterval(interval);
   }, []);
 
@@ -132,10 +132,6 @@ const useStats = (vault: Vault) => {
 
   useEffect(() => {
     fetchStats();
-    const interval = setInterval(() => {
-      fetchStats();
-    }, 15000);
-    return () => clearInterval(interval);
   }, []);
 
   return stats;

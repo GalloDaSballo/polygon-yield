@@ -20,9 +20,10 @@ const useERC20Balance = (user: User, address: string): BigNumber => {
   }, [user, address]);
 
   useEffect(() => {
+    fetchUserBalance();
     const interval = setInterval(() => {
       fetchUserBalance();
-    }, 2000);
+    }, 20000);
     return () => clearInterval(interval);
   }, [fetchUserBalance]);
 
